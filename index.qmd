@@ -1,0 +1,66 @@
+---
+title: "Advanced Analytics with R"
+author: "Ayush Patel"
+format: html
+---
+
+> This is the __Course Landing Page__ for Advanced Analytics with R. Visiting this page will help you access alll the lecutre materials and other necessary announcements if any.
+
+## Learning Objective
+
+The ultimate aim of this course is to provide a gentle introduction to statistical learning techniques. I aim to expose the learners to a wide variety of techniques.^[There is a trade off here. Given the time constraint of 40 teaching hours and the choice of exposing to a wide variety of techniques, I can afford only a reasonable amount of depth to each topic.] 
+
+After successful completion of this course, a learner will have foundational understanding of statistical learning techniques, when to apply a given technique and how to use R to apply these techniques.
+
+## Pre-requisite
+
+If you can comfortably understand the following code and are fairly confidant about the functions used in the code, you most likely have the necessary R programming skills to absorb the materials covered in this course.
+
+```{r pre-req}
+#| eval: false
+
+## read data on disk and store as an object
+
+data <- read_csv("file location/fil.csv")
+
+## Data Wrangling
+
+data %>% 
+  filter(semister == 5) %>% 
+  group_by(division) %>% 
+  summarise(
+    avg_attend = mean(attend, na.rm = T),
+    max_score = max(score, na.rm = T)
+  )
+
+```
+
+In case you are having difficulty in guessing what the above piece of code does, __[Please read the Chapter 5 of R for Data Science](https://r4ds.had.co.nz/transform.html)__
+
+Following are the programming techniques that are _not required_ for this course but are highly useful and will make learning experience easier:
+
+  + Iterations
+  + Writing custom functions
+  + Data Visualization
+  
+## Teaching Material
+
+Here are links to lecture slides, this will keep updating. Please visit this page before every lecture to gain access to lecture slides.^[The slides will be uploaded a day before or on the day of the lecture.]
+
+  + Refresher: [Introduction to R](https://ayushbipinpatel.github.io/R-for-Data-Analysis/introduction-to-r.html#1)
+  + Refresher: Data Wrangling
+  
+
+## Announcements
+
+Here you will find any important Announcements regarding the course.
+
+  + The Lecture scheduled on the 16th of Aug has been delayed by an hour for __Division 2__ _only_. This means that the lecture will start at 11:45 am.
+  
+
+## Get in Touch
+
+The best way to reach me is by email. You can use either of the following:
+
+  + `ayush.ap58@gmail.com`
+  + `ayus.patel@gipe.ac.in`
