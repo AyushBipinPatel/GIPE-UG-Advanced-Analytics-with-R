@@ -1,10 +1,15 @@
 ---
 title: "Advanced Analytics with R"
 author: "Ayush Patel"
+date: "August, 14 2023"
 format: html
 ---
 
 > This is the __Course Landing Page__ for Advanced Analytics with R. Visiting this page will help you access alll the lecutre materials and other necessary announcements if any.
+
+:::{.callout-tip}
+Type in hour browser __bit.ly/aar-ug__ to get to this page
+:::
 
 ## Learning Objective
 
