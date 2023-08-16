@@ -53,7 +53,7 @@ Following are the programming techniques that are _not required_ for this course
 Here are links to lecture slides, this will keep updating. Please visit this page before every lecture to gain access to lecture slides.^[The slides will be uploaded a day before or on the day of the lecture.]
 
   + Refresher: [Introduction to R](https://ayushbipinpatel.github.io/R-for-Data-Analysis/introduction-to-r.html#1)
-  + Refresher: Data Wrangling
+  + Refresher: [Data Wrangling](https://ayushbipinpatel.github.io/R-for-Data-Analysis/data-wrangling.html#1)
   
 
 ## Announcements
