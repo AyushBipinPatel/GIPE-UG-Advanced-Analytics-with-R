@@ -1,0 +1,286 @@
+---
+title: "Advance Analytics with R (UG 21-24)"
+author: "Ayush Patel"
+subtitle: "Resources and Introduction"
+format: 
+  revealjs:
+    standalone: true
+    slide-number: c/t
+    width: 1400
+    theme: [serif, theme.scss]
+---
+
+## Before we start
+
+::::{.columns}
+
+:::{.column width="70%"}
+
+__Please Install the follwing packages _if not_ already installed__
+
+```{r}
+#| eval: false
+#| echo: true
+
+install.packages("tidymodels")
+
+install.packages("ISLR2")
+
+install.packages("ISLR")
+
+```
+
+
+<br>
+<br>
+
+Access lecture slide from [bit.ly/aar-ug](http://bit.ly/aar-ug)
+
+:::
+
+:::{.column width="30%"}
+
+```{=html}
+<figure>
+<img src="https://images.metmuseum.org/CRDImages/aa/original/DT5334.jpg" alt="Warrior's armor(gusoku)" >
+<figcaption style="font-size:10px;">Source: <a herf = "https://www.metmuseum.org/art/collection/search/24975?searchField=All&amp;sortBy=Relevance&amp;high=on&amp;ao=on&amp;showOnly=openAccess&amp;ft=start&amp;offset=0&amp;rpp=40&amp;pos=7">Armor (Gusoku)</a></figcaption>
+</figure>
+```
+
+:::
+
+::::
+
+## Hello
+
+::::{.columns}
+
+:::{.column width="70%"}
+I am [Ayush]{.fragment fragment-index="1" style="font-size:45px"}.
+
+
+[I am a researcher working at the intersection of data, law, development and economics.]{.fragment fragment-index="2" style="font-size:25px"} 
+
+[I teach Data Science using R at Gokhale Institute of Politics and Economics]{.fragment fragment-index="3" style="font-size:25px"} 
+
+[I am a [RStudio (Posit) certified tidyverse Instructor.](https://education.rstudio.com/trainers/people/patel+ayush/)]{.fragment fragment-index="4" style="font-size:25px"} 
+
+[I am a Researcher at [Oxford Poverty and Human development Initiative (OPHI)](https://ophi.org.uk/), at the University of Oxford.]{.fragment fragment-index="5" style="font-size:25px"} 
+:::
+
+:::{.column width="30%"}
+
+__Reach me__
+
+{{< fa solid envelope >}} [ayush.ap58@gmail.com]{style="font-size:25px"}
+
+{{< fa solid envelope >}} [ayush.patel@gipe.ac.in]{style="font-size:25px"}
+
+:::
+
+::::
+
+## What will you learn?
+
+### Statistical Learning Techniques
+
+:::{.incremental}
+
+- What are Statistical Learning Techniques?
+
+- When to apply a given technique?
+
+- How to apply a given technique using R?
+
+- Ways to evaluate the performance of a technique (How well it serves your purpose ?).
+
+:::
+
+## What you will not learn {.center}
+
+:::{.incremental}
+
+- All statistical techniques that exists
+
+- All the mathematics behind a statistical technique. 
+
+:::
+
+## Resources 
+
+__There is no one fixed textbook of this course.__
+
+_But here are some resources I will be using to teach:_
+
+:::{.panel-tabset}
+
+### ISLR
+
+<iframe src="https://www.statlearning.com/" scrolling= "yes" width = 1600 height = 400></iframe>
+
+### TMWR
+
+<iframe src="https://www.tmwr.org/" scrolling= "yes" width = 1600 height = 400></iframe>
+
+### MDS
+
+<iframe src="https://mdsr-book.github.io/mdsr3e/" scrolling= "yes" width = 1600 height = 400></iframe>
+
+### TSD
+
+<iframe src="https://tellingstorieswithdata.com/" scrolling= "yes" width = 1600 height = 400></iframe>
+
+### IMS
+
+<iframe src="https://openintro-ims.netlify.app/index.html" scrolling= "yes" width = 1600 height = 400></iframe>
+
+:::
+
+## Pre-requisite
+
+:::{.incremental}
+
+- Data Wrangling. 
+
+- Data Visualization.
+
+- Exploratory Data Analysis.
+
+- Fundamental Stats - random variables, summary statistics, probability distributions, etc.
+
+:::
+
+## Why learn this stuff? {.center}
+
+   
+   
+For the sake of _curiosity_, in order to _affect outcomes_; We are interested in knowing how something works, why something happens and what will happen.
+
+# Ways to think about Data Science methods and models{.center}
+
+## What is Statistical Learning? - ISLR
+
+> "Statistical learning refers to a vast set of tools for _understanding_ data."
+
+>"Broadly speaking,supervised statistical learning involves building a statistical model for predicting, or estimating, an output based on one or more inputs."
+
+>"With unsupervised statistical learning, there are inputs but no supervising output; nevertheless we can learn relationships and structure from such data."
+
+## Types of Models - TMWR{.scrollable}
+
+> "While this list is not exhaustive, most models fall into at least one of these categories:"
+
+  - 1. __Descriptive Models__ "The purpose of a descriptive model is to describe or illustrate characteristics of some data. The analysis might have no other purpose than to visually emphasize some trend or artifact in the data."
+  
+  - 2. __Inferential Models__ "The goal of an inferential model is to produce a decision for a research question or to explore a specific hypothesis, similar to how statistical tests are used."
+  
+  - 3. __Predictive Models__ "Sometimes data are modeled to produce the most accurate prediction possible for new data. Here, the primary goal is that the predicted values have the highest possible fidelity to the true value of the new data."
+  
+# Statistical Learning{.center}
+
+## Finding Nemo (function f)
+
+In order to predict, estimate or classify a __variable of interest__ using __other variables__ , we are attempting to find out a how these _other variables_ provide _systemic information_ about the _variable of interest._
+
+$$Y = f(X) + e$$
+
+`Y is the variable of interest.`
+
+`f(X) is the function (Nemo) that provides systemic information about Y.`
+
+`e is the error term independt of X.`
+
+> The essence of statistical learning is to estimate f(x)
+
+## Why Estimate f?{.scrollable}
+
+Either we need to predict or estimate some quantity.
+
+### Prediction
+
+True representation:
+
+$$Y = f(X) + e$$
+
+Model: (We are OK with f being typically unknown - blackbox )
+
+$$\hat Y = \hat f(x)$$
+
+$$E(Y - \hat Y)^2 = E(f(X) + e - \hat f(X) )^2\\ = [f(X) - \hat f(X)]^2 + Var(e)
+$$
+Reducible and irreducible error.
+
+The goal is to minimize the reducible error.
+
+The `Var(e)` sets the upper bound on accuracy of your predictions.
+
+## Why Estimate f?{.scrollable}
+
+Either we need to predict or estimate some quantity.
+
+### Inference
+
+Here instead of being worried about what will be `Y` we are more concerned about how are `Y` and `X` related. _We can no more ignore the lack on knowledge about form of f(x)_
+
+_We are increasingly concerned about the relationship of response variable and each independent variable._
+
+## How to Estimate `f`?{.scrollable}
+
+
+__Parametric__
+
+  + Assume a functional form for `f`
+  
+  $$f(X) = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + ... + \beta_n X_n$$
+  
+  or 
+  
+  $$f(X) = \beta_0 + \beta_1 X_1^2 + \beta_2 X_2^2 + ... + \beta_n X_n^2   $$
+  
+  + Use training data to fit the model. Ex : least square method to fit the first equation.
+  
+  + Now the goal is to find n+1 coeffs or parameters instead of estimating an arbitrary n dimensional function.
+  
+  + Disadvantage: Our choice of model might not potentially match the true form of the function. If these two are very different, quality of estimates is poor.
+
+
+## How to Estimate `f`?{.scrollable}
+
+__Non-Parametric__
+
+  + No assumption about the form of the function.
+  + "_Instead they seek an estimate of f that gets as close to the data points as possible without being too rough or wiggly._"
+  + Since there is no assumption about functional form, it is more flexible compared to parametric approaches.
+  + However, since no assumption is made about the form of function, a large number of observations are required for non-parametric methods to generate accurate estimate of `f`.
+
+# Assesing Model Accuracy
+
+## Does it fit?
+
+_For quantitative response variables_
+
+$$ MSE = \frac{1}{n}\sum_{i=1}^{n}(y_i - \hat y_i)^2 $$
+
+$$\hat y_i =  \hat f(x_i)$$
+
+__Should you care about training MSE or test MSE?__
+
+__Should you use training MSE if you don't have test data?__
+
+## Bais - Variance Trade-off{.center}
+
+_For quantitative response variables_
+
+$$E(y_0 - \hat f(x_0))^2 = Var(\hat f(x_0)) + [Bias(\hat f(x_0))]^2 + Var(e)$$
+
+## Does it fit?
+
+_For qualitative response variables_
+
+$$\frac{1}{n}\sum_{i=0}^{n}(y_i \not = \hat y_i)$$
+
+## Reading and Acknowledgements {.center}
+
+Read Chapters 1 and 2 of Intro to statistical learning with R
+
+## Thank you{.center}
