@@ -4,6 +4,7 @@ author: "Ayush Patel"
 subtitle: "Resources and Introduction"
 format: 
   revealjs:
+    embed-resources: true
     standalone: true
     slide-number: c/t
     width: 1400
