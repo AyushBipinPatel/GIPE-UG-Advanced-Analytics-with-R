@@ -54,6 +54,7 @@ Here are links to lecture slides, this will keep updating. Please visit this pag
 
   + Refresher: [Introduction to R](https://ayushbipinpatel.github.io/R-for-Data-Analysis/introduction-to-r.html#1)
   + Refresher: [Data Wrangling](https://ayushbipinpatel.github.io/R-for-Data-Analysis/data-wrangling.html#1)
+  + Refresher: [Data Visualization using R](https://ayushbipinpatel.github.io/iisa-2022-viz-workshop/lecture_slides.html#/title-slide)
   + [Lecture 1: Resources and Introduction](lecture1.html) 
   
 

@@ -5,7 +5,6 @@ subtitle: "Resources and Introduction"
 format: 
   revealjs:
     embed-resources: true
-    standalone: true
     slide-number: c/t
     width: 1400
     theme: [serif, theme.scss]
@@ -117,24 +116,39 @@ _But here are some resources I will be using to teach:_
 
 ### ISLR
 
+```{=html}
 <iframe src="https://www.statlearning.com/" scrolling= "yes" width = 1600 height = 400></iframe>
+
+```
 
 ### TMWR
 
+```{=html}
 <iframe src="https://www.tmwr.org/" scrolling= "yes" width = 1600 height = 400></iframe>
+
+```   
 
 ### MDS
 
-<iframe src="https://mdsr-book.github.io/mdsr3e/" scrolling= "yes" width = 1600 height = 400></iframe>
+```{=html}
+<iframe  width = "1600" height = "400" src="https://mdsr-book.github.io/mdsr3e/"></iframe>
+
+```
 
 ### TSD
 
+```{=html}
 <iframe src="https://tellingstorieswithdata.com/" scrolling= "yes" width = 1600 height = 400></iframe>
+
+```
 
 ### IMS
 
+```{=html}
+
 <iframe src="https://openintro-ims.netlify.app/index.html" scrolling= "yes" width = 1600 height = 400></iframe>
 
+```
 :::
 
 ## Pre-requisite
