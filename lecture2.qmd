@@ -1,0 +1,268 @@
+---
+title: "Linear Regression"
+subtitle: "Advance Analytics with R (UG 21-24)"
+author: "Ayush Patel"
+format: 
+  revealjs:
+    embed-resources: true
+    slide-number: c/t
+    width: 1400
+    theme: [serif, theme.scss]
+---
+
+## Before we start
+
+::::{.columns}
+
+:::{.column width="70%"}
+
+__Please load the following packages
+
+```{r}
+#| eval: false
+#| echo: true
+
+library(tidyverse)
+library(MASS)
+library(ISLR)
+library(ISLR2)
+
+```
+
+
+<br>
+<br>
+
+Access lecture slide from [bit.ly/aar-ug](http://bit.ly/aar-ug)
+
+:::
+
+:::{.column width="30%"}
+
+```{=html}
+<figure>
+<img src="https://images.metmuseum.org/CRDImages/aa/original/DT5334.jpg" alt="Warrior's armor(gusoku)" >
+<figcaption style="font-size:10px;">Source: <a herf = "https://www.metmuseum.org/art/collection/search/24975?searchField=All&amp;sortBy=Relevance&amp;high=on&amp;ao=on&amp;showOnly=openAccess&amp;ft=start&amp;offset=0&amp;rpp=40&amp;pos=7">Armor (Gusoku)</a></figcaption>
+</figure>
+```
+
+:::
+
+::::
+
+## Hello
+
+::::{.columns}
+
+:::{.column width="70%"}
+I am [Ayush]{.fragment fragment-index="1" style="font-size:45px"}.
+
+
+[I am a researcher working at the intersection of data, law, development and economics.]{.fragment fragment-index="2" style="font-size:25px"} 
+
+[I teach Data Science using R at Gokhale Institute of Politics and Economics]{.fragment fragment-index="3" style="font-size:25px"} 
+
+[I am a [RStudio (Posit) certified tidyverse Instructor.](https://education.rstudio.com/trainers/people/patel+ayush/)]{.fragment fragment-index="4" style="font-size:25px"} 
+
+[I am a Researcher at [Oxford Poverty and Human development Initiative (OPHI)](https://ophi.org.uk/), at the University of Oxford.]{.fragment fragment-index="5" style="font-size:25px"} 
+:::
+
+:::{.column width="30%"}
+
+__Reach me__
+
+{{< fa solid envelope >}} [ayush.ap58@gmail.com]{style="font-size:25px"}
+
+{{< fa solid envelope >}} [ayush.patel@gipe.ac.in]{style="font-size:25px"}
+
+:::
+
+::::
+
+## Learning Objective{.center}
+
+Learn to apply and interpret simple and multiple linear regression models.
+
+References for this lecture:
+
+  - Chapter 3, ISLR (reference)
+  - Chapters 7 and 8, Intro to Modern Statistics (Reading for intuitive understanding)
+
+## Advertising Data 
+
+```{r}
+#|echo: false
+
+readr::read_csv("data/Advertising.csv") -> advertisement
+```
+
+```{r show-advr}
+
+advertisement|>
+  knitr::kable()|>
+  kableExtra::kable_styling()|>
+  kableExtra::scroll_box(width = "100%", 
+                         height = "600px")
+  
+
+```
+
+## Association between slaes and budget?
+
+```{r}
+#|echo: false
+
+advertisement|>
+  ggplot2::ggplot()+
+  ggplot2::geom_point(
+    ggplot2::aes(
+    x = TV, y = sales
+  ), colour = "red",
+  alpha = 0.5)+
+  ggplot2::geom_point(
+    ggplot2::aes(
+    x = radio, y = sales
+  ), colour = "green",
+  alpha = 0.5)+
+  ggplot2::geom_point(
+    ggplot2::aes(
+    x = newspaper, y = sales
+  ), colour = "steelblue",
+  alpha = 0.5)+
+  ggplot2::labs(
+    title = "Is there Association between Sales and advertisement budget??",
+    subtitle = "red is TV, green is radio and blue is newspaper",
+    x = "advertisement budget"
+  )+
+  ggplot2::theme_bw()
+```
+
+## How strong is the association, if any?{.center}
+
+__sales and TV__
+```{r}
+#|echo: false
+cor(x = advertisement$TV,
+    y = advertisement$sales)
+```
+__sales and radio__
+
+```{r}
+#|echo: false
+cor(x = advertisement$radio,
+    y = advertisement$sales)
+```
+
+__sales and newspaper__
+
+```{r}
+#|echo: false
+cor(x = advertisement$newspaper,
+    y = advertisement$sales)
+```
+
+
+## Linear model{.center}
+
+A linear model can help us answer questions about association between response and predictors, predict sales in future, linearity of relation, and interaction between predictors. 
+
+## A simple linear model
+
+$$
+Y \approx \beta_0 + \beta_1X
+$$
+
+$$\beta_0\hspace{1mm} is\hspace{1mm}population\hspace{1mm}intercept$$
+
+$$\beta_1\hspace{1mm} is\hspace{1mm}population\hspace{1mm}slope$$
+Our estimates are represented as :
+
+$$ \hat\beta_0$$ $$\hat\beta_1$$
+
+## How to reach the best estimate?
+
+__The Idea is to, essentially, draw a line through the points such that distance of every point from line is as small a possible.__
+
+```{r}
+
+advertisement|>
+  ggplot2::ggplot(ggplot2::aes(
+    x = TV, y = sales
+  ))+
+  ggplot2::geom_point(
+    colour = "red",
+  alpha = 0.5)+
+  ggplot2::geom_smooth(method = "lm",
+                       se =F,
+                       size = 0.51)+
+  ggplot2::labs(
+    title = "What is the best fit?",
+    x = "TV budget"
+  )+
+  ggplot2::theme_bw()
+```
+
+## Least squares
+
+One way to get estimates of population coefficients or parameters is **minimizing least squares**.
+
+$$sales \approx \beta_0 + \beta_1*TV$$
+
+$$\hat y_i = \hat\beta_0 + \hat\beta_1x_i$$
+$$e_i = y_i - \hat y_i$$
+
+$$RSS = e_1^2 + e_2^2....+e_n^2$$
+
+## Minimize RSS
+
+*Least square coefficient estimates*
+
+$$
+\hat\beta_1 = \frac{\sum_i^n(x_i - \bar x)(y_i - \bar y)}{\sum_i^n(x_i - \bar x)^2}
+$$
+
+$$
+\hat\beta_0 = \bar y - \hat\beta_1\bar x 
+$$
+
+## The model
+
+```{r}
+lm(sales ~ TV, data = advertisement)
+```
+
+"For every`additional $1000 spent on TV advertisement budget, there is additional sale of ~47.5 units "
+
+## Exercise
+
+Use the data `Auto` from the `{ISRL2}`
+Fit this model. 
+
+$$horsepower = \beta_0 +  \beta_1*weight + \epsilon$$
+
+find coeff estimates and residuals:
+$$\hat\beta_0$$ and $$\hat\beta_1$$ 
+
+## How well did we estimate the coefficients?{.scrollable}
+
+$$Compute\hspace{1mm} standard\hspace{1mm}error\hspace{1mm} of\hspace{1mm} \hat\beta_0\hspace{1mm} and\hspace{1mm} \hat\beta_1$$
+
+something like this:
+
+$$Var(\hat\mu) = SE(\hat\mu) = \frac{\sigma^2}{n}$$
+
+**but in reality**
+
+$$SE(\hat\beta_0)^2 = \sigma^2[\frac{1}{n}+\frac{\bar x^2}{\sum_i^n(x_i - \bar x)^2}]\hspace{2cm}SE(\hat\beta_1)^2 = \frac{\sigma^2}{\sum_i^n(x_i - \bar x)^2}$$
+
+What is sigma here ?
+
+$$what\hspace{1mm} happens\hspace{1mm} when\hspace{1mm} x_i\hspace{1mm} are\hspace{1mm} spread\hspace{1mm} out\hspace{1mm} ?$$
+
+**We can use SE to to hypothesis testing. t-statistic is used to do this in practise**
+
+$$t = \frac{\hat\beta_1 - 0}{SE(\hat\beta_1)}$$
+```{r}
+summary(lm(sales ~ TV, data = advertisement))
+```
+

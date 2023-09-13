@@ -16,7 +16,7 @@ format:
 
 :::{.column width="70%"}
 
-__Please Install the follwing packages _if not_ already installed__
+__Please Install the following packages _if not_ already installed__
 
 ```{r}
 #| eval: false
