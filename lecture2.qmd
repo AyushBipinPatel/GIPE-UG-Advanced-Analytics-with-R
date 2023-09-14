@@ -12,11 +12,9 @@ format:
 
 ## Before we start
 
-::::{.columns}
-
-:::{.column width="70%"}
-
-__Please load the following packages
+::: columns
+::: {.column width="70%"}
+\_\_Please load the following packages
 
 ```{r}
 #| eval: false
@@ -29,66 +27,55 @@ library(ISLR2)
 
 ```
 
-
-<br>
-<br>
+<br> <br>
 
 Access lecture slide from [bit.ly/aar-ug](http://bit.ly/aar-ug)
-
 :::
 
-:::{.column width="30%"}
-
+::: {.column width="30%"}
 ```{=html}
 <figure>
 <img src="https://images.metmuseum.org/CRDImages/aa/original/DT5334.jpg" alt="Warrior's armor(gusoku)" >
 <figcaption style="font-size:10px;">Source: <a herf = "https://www.metmuseum.org/art/collection/search/24975?searchField=All&amp;sortBy=Relevance&amp;high=on&amp;ao=on&amp;showOnly=openAccess&amp;ft=start&amp;offset=0&amp;rpp=40&amp;pos=7">Armor (Gusoku)</a></figcaption>
 </figure>
 ```
-
 :::
-
-::::
+:::
 
 ## Hello
 
-::::{.columns}
-
-:::{.column width="70%"}
+::: columns
+::: {.column width="70%"}
 I am [Ayush]{.fragment fragment-index="1" style="font-size:45px"}.
 
+[I am a researcher working at the intersection of data, law, development and economics.]{.fragment fragment-index="2" style="font-size:25px"}
 
-[I am a researcher working at the intersection of data, law, development and economics.]{.fragment fragment-index="2" style="font-size:25px"} 
+[I teach Data Science using R at Gokhale Institute of Politics and Economics]{.fragment fragment-index="3" style="font-size:25px"}
 
-[I teach Data Science using R at Gokhale Institute of Politics and Economics]{.fragment fragment-index="3" style="font-size:25px"} 
+[I am a [RStudio (Posit) certified tidyverse Instructor.](https://education.rstudio.com/trainers/people/patel+ayush/)]{.fragment fragment-index="4" style="font-size:25px"}
 
-[I am a [RStudio (Posit) certified tidyverse Instructor.](https://education.rstudio.com/trainers/people/patel+ayush/)]{.fragment fragment-index="4" style="font-size:25px"} 
-
-[I am a Researcher at [Oxford Poverty and Human development Initiative (OPHI)](https://ophi.org.uk/), at the University of Oxford.]{.fragment fragment-index="5" style="font-size:25px"} 
+[I am a Researcher at [Oxford Poverty and Human development Initiative (OPHI)](https://ophi.org.uk/), at the University of Oxford.]{.fragment fragment-index="5" style="font-size:25px"}
 :::
 
-:::{.column width="30%"}
+::: {.column width="30%"}
+**Reach me**
 
-__Reach me__
+{{< fa solid envelope >}} [ayush.ap58\@gmail.com]{style="font-size:25px"}
 
-{{< fa solid envelope >}} [ayush.ap58@gmail.com]{style="font-size:25px"}
-
-{{< fa solid envelope >}} [ayush.patel@gipe.ac.in]{style="font-size:25px"}
-
+{{< fa solid envelope >}} [ayush.patel\@gipe.ac.in]{style="font-size:25px"}
+:::
 :::
 
-::::
-
-## Learning Objective{.center}
+## Learning Objective {.center}
 
 Learn to apply and interpret simple and multiple linear regression models.
 
 References for this lecture:
 
-  - Chapter 3, ISLR (reference)
-  - Chapters 7 and 8, Intro to Modern Statistics (Reading for intuitive understanding)
+-   Chapter 3, ISLR (reference)
+-   Chapters 7 and 8, Intro to Modern Statistics (Reading for intuitive understanding)
 
-## Advertising Data 
+## Advertising Data
 
 ```{r}
 #|echo: false
@@ -137,15 +124,17 @@ advertisement|>
   ggplot2::theme_bw()
 ```
 
-## How strong is the association, if any?{.center}
+## How strong is the association, if any? {.center}
 
-__sales and TV__
+**sales and TV**
+
 ```{r}
 #|echo: false
 cor(x = advertisement$TV,
     y = advertisement$sales)
 ```
-__sales and radio__
+
+**sales and radio**
 
 ```{r}
 #|echo: false
@@ -153,7 +142,7 @@ cor(x = advertisement$radio,
     y = advertisement$sales)
 ```
 
-__sales and newspaper__
+**sales and newspaper**
 
 ```{r}
 #|echo: false
@@ -161,10 +150,9 @@ cor(x = advertisement$newspaper,
     y = advertisement$sales)
 ```
 
+## Linear model {.center}
 
-## Linear model{.center}
-
-A linear model can help us answer questions about association between response and predictors, predict sales in future, linearity of relation, and interaction between predictors. 
+A linear model can help us answer questions about association between response and predictors, predict sales in future, linearity of relation, and interaction between predictors.
 
 ## A simple linear model
 
@@ -174,14 +162,13 @@ $$
 
 $$\beta_0\hspace{1mm} is\hspace{1mm}population\hspace{1mm}intercept$$
 
-$$\beta_1\hspace{1mm} is\hspace{1mm}population\hspace{1mm}slope$$
-Our estimates are represented as :
+$$\beta_1\hspace{1mm} is\hspace{1mm}population\hspace{1mm}slope$$ Our estimates are represented as :
 
 $$ \hat\beta_0$$ $$\hat\beta_1$$
 
 ## How to reach the best estimate?
 
-__The Idea is to, essentially, draw a line through the points such that distance of every point from line is as small a possible.__
+**The Idea is to, essentially, draw a line through the points such that distance of every point from line is as small a possible.**
 
 ```{r}
 
@@ -208,8 +195,7 @@ One way to get estimates of population coefficients or parameters is **minimizin
 
 $$sales \approx \beta_0 + \beta_1*TV$$
 
-$$\hat y_i = \hat\beta_0 + \hat\beta_1x_i$$
-$$e_i = y_i - \hat y_i$$
+$$\hat y_i = \hat\beta_0 + \hat\beta_1x_i$$ $$e_i = y_i - \hat y_i$$
 
 $$RSS = e_1^2 + e_2^2....+e_n^2$$
 
@@ -231,19 +217,17 @@ $$
 lm(sales ~ TV, data = advertisement)
 ```
 
-"For every`additional $1000 spent on TV advertisement budget, there is additional sale of ~47.5 units "
+"For every\`additional \$1000 spent on TV advertisement budget, there is additional sale of \~47.5 units"
 
 ## Exercise
 
-Use the data `Auto` from the `{ISRL2}`
-Fit this model. 
+Use the data `Auto` from the `{ISRL2}` Fit this model.
 
 $$horsepower = \beta_0 +  \beta_1*weight + \epsilon$$
 
-find coeff estimates and residuals:
-$$\hat\beta_0$$ and $$\hat\beta_1$$ 
+find coeff estimates and residuals: $$\hat\beta_0$$ and $$\hat\beta_1$$
 
-## How well did we estimate the coefficients?{.scrollable}
+## How well did we estimate the coefficients? {.scrollable}
 
 $$Compute\hspace{1mm} standard\hspace{1mm}error\hspace{1mm} of\hspace{1mm} \hat\beta_0\hspace{1mm} and\hspace{1mm} \hat\beta_1$$
 
@@ -262,7 +246,120 @@ $$what\hspace{1mm} happens\hspace{1mm} when\hspace{1mm} x_i\hspace{1mm} are\hspa
 **We can use SE to to hypothesis testing. t-statistic is used to do this in practise**
 
 $$t = \frac{\hat\beta_1 - 0}{SE(\hat\beta_1)}$$
+
 ```{r}
 summary(lm(sales ~ TV, data = advertisement))
 ```
 
+## Assessing Model Accuracy{.scrollable}
+
+**RSE** and **R\^2**
+
+```{r echo=TRUE}
+mod <- summary(lm(sales ~ TV, data = advertisement))
+```
+
+```{r echo=TRUE}
+
+mod$sigma
+
+mod$sigma/mean(advertisement$sales)
+
+mod$r.squared
+
+```
+
+:::{.panel-tabset}
+
+### RSE
+
+Residual Standard Error is the standard deviation of $\epsilon$. Essentially $\sqrt\frac{RSS}{n-2}$
+
+This is a measure of *lack of fit*.
+
+It is in terms of Y, so scale is involved(Beware).
+
+### $R^2$
+
+It is the proportion of variance in the response that is explained by the model.
+
+TSS is total sum of squares $\sum_i^n(y_i - \bar y)$
+
+$$\frac{TSS-RSS}{TSS}$$
+
+$R^2$ is between 0 and 1. Therefore easier to interpret.
+
+:::
+
+## Multiple Linear Regression{.center}
+
+   - In reality, there can be more than one predictors that influence or are associated with response.
+   - Run a simple linear regression for each predictor? Why not? (Cant make a single prediction about sale, in every model two other medias are ignored - predictors could be correlated )
+   
+## Multiple Linear Regression{.scrollable}
+
+```{r echo=TRUE}
+
+mod <- lm(sales ~ TV + radio + newspaper,
+   data = advertisement)
+
+broom::tidy(mod)
+
+broom::glance(mod)
+
+broom::augment(mod)
+
+```
+
+## What is going on with newspaper?{.scrollable}
+
+  - We saw that sales and newspaper have a positive weak correlation (~0.22).
+  - Then Why is the $\beta_(newspaper)$ negative?
+  - What do you think about its standard error?
+  - What is the coefficient and SE when you execute `lm(sales ~ newspaper, data = advertisement)`? Why is this so different?
+  
+```{r echo=TRUE}
+lm(sales~newspaper, data = advertisement)|>
+  summary()|>
+  broom::tidy()
+```
+  
+## Fishy business
+
+```{r}
+corrplot::corrplot(corr = cor(advertisement[,-1]),
+                   title = "Advertisement Correlation Matrix",
+                   method = "number")
+```
+## The F-statistic
+
+$$
+F = \frac{(TSS-RSS)/p}{RSS/(n-p-1)}
+$$
+In a multiple linear regression we need to ensure that all coefficients for $p$ predictors are not equal to zero. Meaning that at least one of those is non-zero. F-statistic helps us ensure that.
+
+That means if $H_0$ is true, F will be near 1 and if not F will be far larger than 1.
+
+## Variable Selection
+
+Well if one or more predictors have non-zero coef and are associated with response, **Which are those?**
+
+   - We will begin with trying out various subsets of predictors and assess all possible models.(Can you try out $2^p$ models?)
+   - Mallow's $C_p$, Akaike information criterion (AIC), Bayesian information criterion (BIC), and adjusted $R^2$.
+  - Forward selection, Backward Selection
+  
+## Qualitative Variables - dummies
+
+```{r}
+ISLR2::Credit|>
+  knitr::kable()|>
+  kableExtra::kable_styling()|>
+  kableExtra::scroll_box(width = "100%", height = "600px")
+  
+```
+
+## Exercise 
+
+Use `Credit` in {ISLR2} data, use balance as response and create a model that you think is good. Try out qualitative variables as well. Begin by looking at all possible variables in data and think which could affect the response.
+
+TRY the {broom} package as well.
