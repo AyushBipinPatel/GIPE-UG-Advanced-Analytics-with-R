@@ -579,5 +579,25 @@ p1+p2
   
 ## Potential Problem - Outlier
 
-> "*An outlier is a point for which yi is far from the value predicted by the model.*"
+> "*An outlier is a point for which $Y_i$ is far from the value predicted by the model.*"
+
+  - If the predictor value for an Outlier is usual, then it has little effect on the fit, but can effect RSE, p-values and $R^2$.
+  - We can use residual vs fitted chart to identify an Outlier. But the question remains: *How high is high?*
+  - To answer that, plot studentized residuals. How are these calculated? `studres(model)`. For each residual this value is expected to be less that absolute 3, i.e. between -3 and 3.
   
+## Potential Problems - High leverage
+
+> When the predictor is unusually high, those point are called observations with high leverage.
+
+ - High leverage points have high impact on the fit line.
+ - A point can be high leverage even if it is usual for each individual predictor but not as a set predictors.
+ - `leverage` is calculated to quantify this (for one predictor).
+ 
+ $$h_i = \frac{1}{n}+\frac{(x_i - \bar{x})^2}{\sum_{i'=1}^{n}(x_{i'} - \bar{x})}$$
+ 
+ - $h_i$ is between $\frac{1}{n}$ and $1$
+ - "the average leverage for all the observations is
+always equal to $\frac{(p+1)}{n}$."
+
+## Potential Problems - Collinearity
+
