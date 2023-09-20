@@ -363,3 +363,11 @@ ISLR2::Credit|>
 Use `Credit` in {ISLR2} data, use balance as response and create a model that you think is good. Try out qualitative variables as well. Begin by looking at all possible variables in data and think which could affect the response.
 
 TRY the {broom} package as well.
+
+## Extending the linear model
+
+  - **Additive property** ($X_j$ may be associated with response in a manner that changes with different values of other predictors )
+  - **Linear property** (Response will experience the same amount of changes with one unit change in a predictor, regardless of the value of predictor.)
+  
+> We will see some "classic" ways of relaxing these properties.
+
