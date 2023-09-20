@@ -585,7 +585,7 @@ p1+p2
   - We can use residual vs fitted chart to identify an Outlier. But the question remains: *How high is high?*
   - To answer that, plot studentized residuals. How are these calculated? `studres(model)`. For each residual this value is expected to be less that absolute 3, i.e. between -3 and 3.
   
-## Potential Problems - High leverage
+## Potential Problems - High leverage{.scrollable}
 
 > When the predictor is unusually high, those point are called observations with high leverage.
 
@@ -599,5 +599,14 @@ p1+p2
  - "the average leverage for all the observations is
 always equal to $\frac{(p+1)}{n}$."
 
-## Potential Problems - Collinearity
+## Potential Problems - Collinearity{.scrollable}
+
+  - When collinearity exists between two variables, it is difficult to say how individually one predictor is associated with response.
+  - Look at correlation matrix for all variables. (*Not a catch all solution - multi-collinearity*)
+  - The VIF is variance inflation factor, the ratio of the  variance of $\hat\beta_j$ when fitting the full model divided by the variance of $\hat\beta_j$ if fit on its own.
+  - VIF for individual predictor can be computed by:
+  
+  $$VIF(\hat\beta_j) = \frac{1}{1-R_{X_j|X_{-j}}^2}$$
+  
+  - Two was to deal with this. Drop predictors with high VIF or combine predictors into a single one. 
 
