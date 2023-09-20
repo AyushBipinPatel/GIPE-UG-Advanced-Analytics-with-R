@@ -10,6 +10,17 @@ format:
     theme: [serif, theme.scss]
 ---
 
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+
+library(tidyverse)
+library(MASS)
+library(ISLR)
+library(ISLR2)
+library(patchwork)
+
+```
+
+
 ## Before we start
 
 ::: columns
@@ -370,4 +381,183 @@ TRY the {broom} package as well.
   - **Linear property** (Response will experience the same amount of changes with one unit change in a predictor, regardless of the value of predictor.)
   
 > We will see some "classic" ways of relaxing these properties.
+
+## Breaking Additive Assumption by Interaction
+
+Instead of $Y = \beta_0 + \beta_1X_1 + \beta_2X_2$
+
+We add a interaction term for $X_1$ and $X_2$
+
+$$
+\begin{align}
+\begin{aligned}
+Y & = \beta_0 + \beta_1X_1 + \beta_2X_2 + \beta_3X_1X_2\\
+  & = \beta_0 + X_1(\beta_1 + \beta_3X_2)+\beta_2X_2
+\end{aligned}
+\end{align}
+$$
+
+*What to do when p-values of $\beta_1$ and $\beta_2$ are large and the p-value of the interaction term is small? (hierarchical principle)*
+
+## Advertisement and Interaction{.scrollable}
+
+::: panel-tabset
+
+### Sales, TV and radio
+
+```{r echo=FALSE,warning=FALSE}
+advertisement|>
+  ggplot2::ggplot(ggplot2::aes(TV,sales))+
+  ggplot2::geom_point(ggplot2::aes(colour = radio))+
+  ggplot2::geom_smooth(method = "lm")+
+  ggplot2::scale_color_viridis_c(option = "A")+
+  ggplot2::guides(colour = ggplot2::guide_colorbar(
+    title = "Radio",
+    direction = "horizontal",
+    barwidth = 15))+
+  ggplot2::theme_minimal()+
+  ggplot2::theme(
+    legend.position = "top"
+  )
+```
+
+
+### The old model
+
+```{r echo=TRUE}
+old_nmod <- lm(sales~TV+radio, data=advertisement)
+
+broom::tidy(old_nmod)|>
+  gt::gt()
+
+broom::glance(old_nmod)
+```
+
+
+### Interaction
+
+```{r echo=TRUE}
+new_nmod <- lm(sales~TV+radio+TV*radio,
+               data=advertisement)
+
+broom::tidy(new_nmod)|>
+  gt::gt()
+
+broom::glance(new_nmod)
+```
+
+
+:::
+
+## Exercise{.smaller}
+
+Use the `Credit` data in the {ISRL2} library.
+
+> How does interation work when the variables of interest are QL * QN or QL * QL
+
+**Create a dummy for `student`**
+
+compare these two models
+
+$$Y = \beta_0 + \beta_1income + \beta_2dummy\_student +  \beta_3(income*dummy\_student)$$ 
+and 
+$$Y = \beta_0 + \beta_1income + \beta_2dummy\_student$$
+
+## Polynomial Regression
+
+:::panel-tabset
+
+### The chart
+
+```{r echo=FALSE,warning=FALSE}
+
+ISLR2::Auto|>
+  ggplot2::ggplot(ggplot2::aes(horsepower,mpg))+
+  ggplot2::geom_point()+
+  ggplot2::theme_minimal()+
+  ggplot2::labs(
+    title = "Does this look linear?"
+  )
+
+```
+### quadratic 
+
+$mpg ~ \beta_0 + \beta_1horsepower + \beta_2horsepower^2$
+
+```{r}
+
+ISLR::Auto|>
+  dplyr::mutate(
+    horsepower_2 = horsepower^2
+  ) -> A2
+
+quad_mod <- lm(mpg~ horsepower + horsepower_2,
+               data = A2)
+
+broom::tidy(quad_mod)|>
+  gt::gt()
+
+broom::glance(quad_mod)
+
+```
+
+### simple 
+
+$mpg ~ \beta_0 + \beta_1horsepower$
+
+```{r}
+simp_mod <- lm(mpg~horsepower,
+               data = ISLR::Auto)
+
+broom::tidy(simp_mod)|>
+  gt::gt()
+
+broom::glance(simp_mod)
+
+```
+:::
+
+## Potential Problems
+
+::::{.columns}
+
+:::{.column width="60%"}
+  - Non-linearity of the response-predictor relationships.
+  - Correlation of error terms.
+  - Non-constant variance of error terms.
+  - Outliers.
+  - High-leverage points.
+  - Collinearity.
+:::
+
+:::{.column width="40%"}
+<iframe src="https://giphy.com/embed/mTXSKTk3BsT6w" width="480" height="360" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/mTXSKTk3BsT6w">via GIPHY</a></p>
+:::
+
+::::
+
+
+## Potential problems - Non linear Data
+
+**Residual vs Fitted**, if there is indication of non-linear relation, try non-linear transformations on you predictors.
+
+```{r echo=FALSE, warning=FALSE,fig.align='center'}
+
+broom::augment(quad_mod)|>
+  ggplot(aes(.fitted, .resid))+
+  geom_point()+
+  geom_smooth()+
+  theme_minimal()+
+  labs(title = "For quadratic linear regression") -> p1
+
+broom::augment(simp_mod)|>
+  ggplot(aes(.fitted, .resid))+
+  geom_point()+
+  geom_smooth()+
+  theme_minimal()+
+  labs(title = "For simple linear regression") -> p2
+
+p1+p2
+
+```
 
