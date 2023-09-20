@@ -561,3 +561,23 @@ p1+p2
 
 ```
 
+## Potential Problems - Correlated Error Terms
+
+  - We assume that $\epsilon_1, \epsilon_2, ...\epsilon_n$ are uncorrelated. This means that on reasonable deduction can be done about $\epsilon_{n+1}$ from the information we have about $\epsilon_n$.
+  - What if they are?
+  - recall that $SE$ is calculated based on this assumption.
+  - This means that in case there is correlation in error terms, we may end up trusting the model more than we should.
+  - This is often seem in time-series 
+  - How to test - Durbin-Watson test, Ljung-Box Q test
+  
+## Potential Problems - Non-Constant Variance of error term
+
+  - This means that $Var(\epsilon_i)$ could increase or decrease with the response.
+  - If this is found, this could overestimate $SE$.
+  - Can be identified with a funnel shape of the residual vs fit chart.
+  - To address this, use of a concave function, e.g. log(Y) or $\sqrt{Y}$. 
+  
+## Potential Problem - Outlier
+
+> "*An outlier is a point for which yi is far from the value predicted by the model.*"
+  
