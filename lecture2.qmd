@@ -460,9 +460,9 @@ Use the `Credit` data in the {ISRL2} library.
 
 compare these two models
 
-$$Y = \beta_0 + \beta_1income + \beta_2dummy\_student +  \beta_3(income*dummy\_student)$$ 
+$$Balance = \beta_0 + \beta_1income + \beta_2dummy\_student +  \beta_3(income*dummy\_student)$$ 
 and 
-$$Y = \beta_0 + \beta_1income + \beta_2dummy\_student$$
+$$Balance = \beta_0 + \beta_1income + \beta_2dummy\_student$$
 
 ## Polynomial Regression
 
@@ -483,7 +483,7 @@ ISLR2::Auto|>
 ```
 ### quadratic 
 
-$mpg ~ \beta_0 + \beta_1horsepower + \beta_2horsepower^2$
+$mpg = \beta_0 + \beta_1horsepower + \beta_2horsepower^2$
 
 ```{r}
 
@@ -504,7 +504,7 @@ broom::glance(quad_mod)
 
 ### simple 
 
-$mpg ~ \beta_0 + \beta_1horsepower$
+$mpg = \beta_0 + \beta_1horsepower$
 
 ```{r}
 simp_mod <- lm(mpg~horsepower,
