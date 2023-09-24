@@ -25,7 +25,8 @@ library(patchwork)
 
 ::: columns
 ::: {.column width="70%"}
-\_\_Please load the following packages
+
+Please load the following packages
 
 ```{r}
 #| eval: false
