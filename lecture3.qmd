@@ -269,3 +269,30 @@ glm(
 
 ```
 
+## How to know if its good?
+
+> There is no consesus in statistics community over a single measure that can describe a goodness of fit for logistic regression.
+
+```{r}
+#| echo: true
+
+glm(
+  default_dumm ~ income + balance + student,
+  data = def_dum,
+  family = binomial
+) -> mod_logit
+
+DescTools::PseudoR2(mod_logit,
+                    which = c("McFadden", "CoxSnell",
+                              "Nagelkerke", "Tjur"))
+
+
+```
+
+```{r}
+#| echo: true
+
+AIC(mod_logit) # be careful with this
+
+```
+
