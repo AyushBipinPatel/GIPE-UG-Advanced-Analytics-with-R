@@ -57,6 +57,7 @@ Here are links to lecture slides, this will keep updating. Please visit this pag
   + Refresher: [Data Visualization using R](https://ayushbipinpatel.github.io/iisa-2022-viz-workshop/lecture_slides.html#/title-slide)
   + [Lecture 1: Resources and Introduction](lecture1.html) 
   + [Lecture 2: Linear Regression](lecture2.html)
+  + [Lecture 3: Classification](lecture3.html)
   
 
 ## Announcements
