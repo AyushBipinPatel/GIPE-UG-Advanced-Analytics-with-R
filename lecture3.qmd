@@ -313,3 +313,6 @@ Use the `Credit` data in {ISLR}.
 
 >**What you just did is called *Stratified Approach to Multinomial Logistic Regression*.**
 
+  - n models are created to understand probabilities related to n levels of the categorical response variable.
+  - n models are non-comparable.
+  - relative probabilities amongst n levels of the response are not known.
