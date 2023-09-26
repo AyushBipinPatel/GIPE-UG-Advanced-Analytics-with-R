@@ -308,3 +308,8 @@ Use the `Credit` data in {ISLR}.
     
   - Create three binomial logistic models, one for each newly created variable.
   - Get $PseudoR^2$ for each model.
+
+##  {.center}
+
+>**What you just did is called *Stratified Approach to Multinomial Logistic Regression*.**
+
