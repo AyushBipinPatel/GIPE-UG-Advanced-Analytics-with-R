@@ -311,8 +311,92 @@ Use the `Credit` data in {ISLR}.
 
 ##  {.center}
 
->**What you just did is called *Stratified Approach to Multinomial Logistic Regression*.**
+>**What you just did is called *Stratified binary model*.**
 
   - n models are created to understand probabilities related to n levels of the categorical response variable.
   - n models are non-comparable.
   - relative probabilities amongst n levels of the response are not known.
+  
+## Relative risk or Baseline Approach
+*to Multinomial Logistic Regression*
+
+$$Pr(Y=k|X=x) = \frac{e^{\beta_{k0}+\beta_{k1}x_1+...+\beta_{kp}xp}}{1+\sum_{l=1}^{K-1}e^{\beta_{l0}+\beta_{l1}x_1+...+\beta_{lp}x_p}}$$
+
+for k = 1,...K-1, and
+
+$$Pr(Y=K|X=x) = \frac{1}{1+\sum_{l=1}^{K-1}e^{\beta_{l0}+\beta_{l1}x_1+...+\beta_{lp}x_p}}$$
+
+## Multinomial Logistic
+
+$$log(\frac{Pr(Y=k|X=x)}{Pr(Y=K|X=x)}) = \beta_{k0}+\beta_{k1}x_1+...+\beta_{kp}xp$$
+
+ - Which class is treated as reference or baseline is unimportant.
+ 
+ - How to interpret this?
+ 
+## Data 
+
+```{r}
+palmerpenguins::penguins|>
+  dplyr::glimpse()
+```
+
+## Set Baseline/reference
+
+```{r}
+#| echo: true
+
+palmerpenguins::penguins|>
+  mutate(
+    species = stats::relevel(species,
+                             ref = "Gentoo")
+  ) -> peng_ref
+
+levels(peng_ref$species)
+
+```
+
+## Describe model
+
+```{r}
+#| echo: true
+
+
+
+multi_log <- nnet::multinom(
+  formula = species ~ body_mass_g + bill_length_mm + bill_depth_mm + flipper_length_mm + sex + island, 
+  data = peng_ref
+)
+```
+
+## Peek into Summary - notice anything?
+
+```{r}
+summary(multi_log)
+```
+
+## Getting p-values
+
+```{r}
+#| echo: true
+
+# calculate z-statistics of coefficients
+z_stats <- summary(multi_log)$coefficients/
+  summary(multi_log)$standard.errors
+
+# convert to p-values
+p_values <- (1 - pnorm(abs(z_stats)))*2
+
+
+# display p-values in transposed data frame
+data.frame(t(p_values))
+```
+
+## Fitted values{.scorllable}
+
+```{r}
+multi_log$fitted.values
+```
+
+## Exercise
+
