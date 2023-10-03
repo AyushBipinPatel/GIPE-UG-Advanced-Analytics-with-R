@@ -400,3 +400,10 @@ multi_log$fitted.values
 
 ## Exercise
 
+Use the Publication data from ISLR2.
+
+Split data into 80%-20% training and test set randomly. 
+
+Generate a multinomial logistic model to classify variable mech. 
+
+use the test data to predict mech variable. See if it is a reasonable fit.
