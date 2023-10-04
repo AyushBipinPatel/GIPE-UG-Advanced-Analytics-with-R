@@ -407,3 +407,119 @@ Split data into 80%-20% training and test set randomly.
 Generate a multinomial logistic model to classify variable mech. 
 
 use the test data to predict mech variable. See if it is a reasonable fit.
+
+## Test Error Rate
+
+What was the test error rate you get for the previous exercise?
+
+$$Ave(I(y_0 \neq \hat y_0))$$
+
+## The Bayes Classifier
+
+>*"a classifier that assigns each observation to the most likely class, given its predictor values"* minimizes the test error rate.
+
+- This lowest error rate is called **Bayes Error Rate**
+
+- Bayes Decision Boundary
+
+- Why not always use Bayes Classifier?
+
+## Moving Forward{.center}
+
+**Keep in mind the good old Bayes Rule**
+
+$$P(A|B) = \frac{P(B|A)* P(A)}{P(B)}$$
+
+## Generative Models - What ?
+
+- We saw that logistic model estimates $Pr(Y=k|X=x)$. 
+- Alternatively, we model distribution of each predictor for a given class of Y.
+- Then we use the Bayes rule to get $Pr(Y=k|X=x)$
+- *"When the distribution of X
+within each class is assumed to be normal, it turns out that the model is
+very similar in form to logistic regression"*
+
+## Generative Models - Why?
+
+ - For logistic regression, unstable parameter estimates when separation between two classes is substantial.
+ - When distribution of X for each class of Y is normal and the sample size is small, these methods do better than logistic regression.
+ 
+## Generative Models - How?
+
+$\pi_k$ is the overall probability of seeing $k^{th}$ class of response in data.
+
+$f_k(X) = Pr(X|Y=k)$
+
+$$Pr(Y=k|X=x) = \frac{\pi_k*f_k(x)}{\sum_{l=1}^K\pi_lf_l(x)}$$
+
+
+> We are trying to approximate the Bayes classifier!! We will esplore linear discriminant analysis, quadratic discriminant analysis and naive Bayes
+
+## LDA for One predictor
+
+> Over arching goal is to figure out the $f_k(x)$
+
+**To achieve our goal, we assume that $f_k(x)$ is normal.**
+
+$$f_k(x) = \frac{1}{\sigma_k\sqrt{2\pi}}exp(-\frac{1}{2\sigma_k^2}(x-\mu_k)^2)$$
+
+Here, $\mu_k$ and $\sigma_k^2$ is the mean and variance parameter of the $k^th$ class.
+
+we also assume, that $\sigma_1^2 = ...\sigma_K^2$
+
+## LDA for One Predictor
+
+$$
+Pr(Y=k|X=x) = \frac{\pi_k*\frac{1}{\sigma\sqrt{2\pi}}exp(-\frac{1}{2\sigma^2}(x-\mu_k)^2)}{\sum_{l=1}^K\pi_l\frac{1}{\sigma\sqrt{2\pi}}exp(-\frac{1}{2\sigma^2}(x-\mu_k)^2)}
+$$
+
+$$
+log(Pr(Y=k|X=x)) = x.\frac{\mu_k}{\sigma^2}-\frac{\mu_k^2}{2\sigma^2} + log(\pi_k)
+$$
+
+$$
+x = \frac{\mu_1^2-\mu_2^2}{2(\mu_1-\mu_2)}= \frac{\mu_1 + \mu_2}{2}
+$$
+
+## Applying LDA
+
+```{r}
+#| echo: true
+
+lda_default_balance_student <-
+  MASS::lda(default ~ balance + student, data = Default)
+lda_default_balance_student
+```
+
+## Applying LDA - training error rate
+
+```{r}
+#| echo: true
+
+mean(
+  predict(lda_default_balance_student,
+          newdata = Default)$class != Default$default
+)
+```
+
+- training error rate
+
+- trivial null classifier
+
+```{r}
+#| echo: true
+predict(lda_default_balance_student,
+          newdata = Default)|>names()
+```
+
+## Exercise
+
+- See the OJ data set in ISLR2
+
+- Use this data set to predict variable purchase
+
+- Split data into 80/20 training and testing.
+
+- Use training data to develop a LDA model. Use RoC and confusion matrix to gauge model effectiveness. Fine tune model. See chapter 9 TMWR.
+
+- predict test data with the fine tuned model.
