@@ -36,6 +36,7 @@ library(MASS)
 library(ISLR)
 library(ISLR2)
 library(nnet)### get this if you don't
+library(e1071) ## get this if you don't
 
 ```
 
@@ -523,3 +524,46 @@ predict(lda_default_balance_student,
 - Use training data to develop a LDA model. Use RoC and confusion matrix to gauge model effectiveness. Fine tune model. See chapter 9 TMWR.
 
 - predict test data with the fine tuned model.
+
+## QDA{.scrollable}
+
+**Quadratic Discriminant Analysis**
+
+ -  This too assumes that observations within each class are drawn from a Gaussian distribution.
+ - However, the assumption of common covariance matrix is not held to be true in QDA. This is where it differs from LDA.
+ - This leads to the $x$ in discriminant function to appear as quadratic.
+ - Now, $Kp(p+1)/2$  parameters need to be estimated for covariance matrix instead of p(p+1)/2. **This is where bias variance trade off comes to play.**
+ - This means LDA can have low variance and high bias, especially if the $\sigma_1^2=....=\sigma_K^2$ assumption is badly off.
+ 
+## Exercise
+
+See the `Smarket` data in ISLR2.
+
+Split in 80/20 training and testing.
+
+Train LDA and QDA models.
+
+Test these models and compare results - use test error rate.
+
+What happens if you take n number of training data sets and n number of testing data sets, run LDA and QDA on each pair and plot training error rate and testing error rate distributions? 
+ 
+## Naive Bayes
+
+  - From LDA and QDA we have seen that estimating $\pi_1...\pi_K$ is easy.
+  - Estimating $f_1(x).....f_K(x)$ is difficult.
+  - The estimates of LDA and QDA help us avoid estimating a K p-dimensional density functions.
+  - The Naive Bayes Classifier makes only one assumption - **Within the kth class, the p predictors are independent.**
+  
+  $$f_k(x) = f_{k1}(x_1)*f_{k2}(x_2)*...*f_{kp}(x_p)$$
+
+
+## Naive Bayes
+
+$$pr(X) = \frac{\pi_k*f_{k1}(x_1)*f_{k2}(x_2)*...*f_{kp}(x_p)}{\sum_{l=1}^K \pi_l*f_{l1}(x_1)*f_{l2}(x_2)*...*f_{lp}(x_p)}$$
+> How is $f_{kj} estimated?$
+
+## Exercise
+
+use `naiveBayes` function from e1071 package.
+
+Use Smarket data and compared results with QDA.
