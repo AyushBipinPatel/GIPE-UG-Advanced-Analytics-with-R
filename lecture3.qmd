@@ -567,3 +567,203 @@ $$pr(X) = \frac{\pi_k*f_{k1}(x_1)*f_{k2}(x_2)*...*f_{kp}(x_p)}{\sum_{l=1}^K \pi_
 use `naiveBayes` function from e1071 package.
 
 Use Smarket data and compared results with QDA.
+
+## Estimating Discrete Values{.center}
+
+> What method to use when the response is numeric but always takes the values of a non-negative integer?
+
+## Does Linear Regression work?
+
+> Data: Bikeshare
+
+```{r}
+glimpse(Bikeshare)
+```
+
+## Does Linear Regression work?{.scrollable}
+
+
+```{r}
+summary(
+  lm(
+    bikers ~ workingday + temp + weathersit + mnth + hr,
+    data = Bikeshare
+  )
+)-> ln_summ
+
+ln_summ
+```
+
+## Does Linear Regression work?
+
+```{r}
+#| layout-nrow: 1
+#| fig-height: 8
+
+broom::augment(lm(
+    bikers ~ workingday + temp + weathersit + mnth + hr,
+    data = Bikeshare
+  ))|>
+  ggplot(aes(bikers, .fitted))+
+  geom_point(alpha = 0.5)+
+  labs(
+    title = "True value vs fitted",
+    x = "Bikers",
+    y = "fitted"
+  )+
+  theme_minimal()
+
+broom::augment(lm(
+    bikers ~ workingday + temp + weathersit + mnth + hr,
+    data = Bikeshare
+  ))|>
+  ggplot(aes(y=.resid, x=.fitted))+
+  geom_point(alpha = 0.5)+
+  labs(
+    title = "Residuals vs fitted",
+    y = "residulas",
+    x = "fitted"
+  )+
+  theme_minimal()
+
+```
+
+## Does Linear Regression work?{.scrollable}
+
+> What if we adjustfor non-constant variance of $\epsilon$ with Y.
+
+```{r}
+summary(
+  lm(
+    log(bikers) ~ workingday + temp + weathersit + mnth + hr,
+    data = Bikeshare
+  )
+)-> ln_summ
+
+ln_summ
+```
+
+
+## Does Linear Regression work?
+
+> What if we adjustfor non-constant variance of $\epsilon$ with Y.
+
+
+```{r}
+#| layout-nrow: 1
+#| fig-height: 6.5
+
+broom::augment(lm(
+    log(bikers) ~ workingday + temp + weathersit + mnth + hr,
+    data = Bikeshare
+  ))|>
+  ggplot(aes(`log(bikers)`, .fitted))+
+  geom_point(alpha = 0.5)+
+  labs(
+    title = "True value vs fitted",
+    subtitle = "Adjusted for non-constant variance of epsilon with Y.",
+    x = "Bikers",
+    y = "fitted"
+  )+
+  theme_minimal()
+
+broom::augment(lm(
+    log(bikers) ~ workingday + temp + weathersit + mnth + hr,
+    data = Bikeshare
+  ))|>
+  ggplot(aes(y=.resid, x=.fitted))+
+  geom_point(alpha = 0.5)+
+  labs(
+    title = "Residuals vs fitted",
+    subtitle = "Adjusted for non-constant variance of epsilon with Y.",
+    y = "residulas",
+    x = "fitted"
+  )+
+  theme_minimal()
+
+```
+
+## Poisson Distribution
+
+$$Pr(Y=k) = \frac{e^{-\lambda}\lambda^k}{k!}$$
+
+$Y \in {0,1,2,3,4,...}$ 
+
+$k = 0,1,2,3,4,...$
+
+$\lambda > 0$ is the expected value of $Y$.
+
+$\lambda = E(Y) = Var(Y)$
+
+## Poisson Regression
+
+$\lambda(X_1,..X_p)$ The expected mean is a function of p covariates.
+
+$$log(\lambda(X_1,...,X_p)) = \beta_0 + \beta_1X_1+...+\beta_pX_p$$
+ or
+ 
+$$\lambda(X_1,...,X_p) = e^{\beta_0 + \beta_1X_1+...+\beta_pX_p})$$
+
+## Poisson Regression
+
+$$l(\beta_0,\beta_1,...\beta_p) = \prod_{i=1}^n\frac{e^{-\lambda(x_i)}\lambda(x_i)^{y_i}}{y_i!}$$
+
+## Poisson Regressoion{.scrollable}
+
+```{r}
+#| echo: true
+
+glm(
+  bikers ~ workingday + temp + weathersit + mnth + hr,
+    data = Bikeshare,
+  family = poisson
+)-> bikers_poi
+
+summary(bikers_poi)
+
+```
+
+## Poisson Regression
+
+```{r}
+#| echo: true
+
+DescTools::PseudoR2(bikers_poi,
+                    which = 
+            c("McFadden","CoxSnell",
+              "Nagelkerke"))
+```
+
+
+## Poisson Regression
+
+```{r}
+#| layout-nrow: 1
+#| fig-height: 8
+
+
+broom::augment(bikers_poi,
+               type.predict = "response")|>
+  ggplot(aes(bikers, .fitted))+
+  geom_point(alpha = 0.5)+
+  labs(
+    title = "True values vs fitted",
+    subtitle = "Poisson Regression",
+    x = "Bikers",
+    y = "fitted"
+  )+
+  theme_minimal()
+
+broom::augment(bikers_poi,
+               type.predict = "response")|>
+  ggplot(aes(y=.resid, x=.fitted))+
+  geom_point(alpha = 0.5)+
+  labs(
+    title = "Residuals vs fitted",
+    subtitle = "Poisson Regression",
+    y = "residulas",
+    x = "fitted"
+  )+
+  theme_minimal()
+```
+
