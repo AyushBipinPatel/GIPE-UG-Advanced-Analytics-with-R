@@ -1,0 +1,259 @@
+---
+title: "Resampling Methods"
+subtitle: "Advance Analytics with R (UG 21-24)"
+author: "Ayush Patel"
+format: 
+  revealjs:
+    embed-resources: true
+    slide-number: c/t
+    width: 1400
+    theme: [serif, theme.scss]
+---
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+
+library(tidyverse)
+library(MASS)
+library(ISLR)
+library(ISLR2)
+library(patchwork)
+
+```
+
+
+## Before we start
+
+::: columns
+::: {.column width="70%"}
+
+Please load the following packages
+
+```{r}
+#| eval: false
+#| echo: true
+
+library(tidyverse)
+library(MASS)
+library(ISLR)
+library(ISLR2)
+library(nnet)### get this if you don't
+library(e1071) ## get this if you don't
+
+```
+
+<br> <br>
+
+Access lecture slide from [bit.ly/aar-ug](http://bit.ly/aar-ug)
+:::
+
+::: {.column width="30%"}
+```{=html}
+<figure>
+<img src="https://images.metmuseum.org/CRDImages/aa/original/DT5334.jpg" alt="Warrior's armor(gusoku)" >
+<figcaption style="font-size:10px;">Source: <a herf = "https://www.metmuseum.org/art/collection/search/24975?searchField=All&amp;sortBy=Relevance&amp;high=on&amp;ao=on&amp;showOnly=openAccess&amp;ft=start&amp;offset=0&amp;rpp=40&amp;pos=7">Armor (Gusoku)</a></figcaption>
+</figure>
+```
+:::
+:::
+
+## Hello
+
+::: columns
+::: {.column width="70%"}
+I am [Ayush]{.fragment fragment-index="1" style="font-size:45px"}.
+
+[I am a researcher working at the intersection of data, law, development and economics.]{.fragment fragment-index="2" style="font-size:25px"}
+
+[I teach Data Science using R at Gokhale Institute of Politics and Economics]{.fragment fragment-index="3" style="font-size:25px"}
+
+[I am a [RStudio (Posit) certified tidyverse Instructor.](https://education.rstudio.com/trainers/people/patel+ayush/)]{.fragment fragment-index="4" style="font-size:25px"}
+
+[I am a Researcher at [Oxford Poverty and Human development Initiative (OPHI)](https://ophi.org.uk/), at the University of Oxford.]{.fragment fragment-index="5" style="font-size:25px"}
+:::
+
+::: {.column width="30%"}
+**Reach me**
+
+{{< fa solid envelope >}} [ayush.ap58\@gmail.com]{style="font-size:25px"}
+
+{{< fa solid envelope >}} [ayush.patel\@gipe.ac.in]{style="font-size:25px"}
+:::
+:::
+
+## Learning Objective{.center}
+
+> To better understand model assessment and selection.
+
+We will learn *resampling methods* to help us achieve this objective.
+
+## Resampling Methods
+
+> Essentially, we fit a model over and over using different subsets of training data.
+
+  + Accuracy of estimated parameters.
+  + Performance of a model.
+  + Estimate test error rates.
+  
+> We will learn about Cross-Validation and Bootstrap
+
+## Cross Validation
+
+We know that:
+
+  + Usually, test sets are not available.
+  + Training error rates > Test Error rates
+
+> So we use some techniques to estimate Test Error rate.
+
+**We will carve out a subset from the training data. This carved subset will not be used in fitting process. Then we use this carved subset to fit the model.**
+
+## Cross Validation -Validation Set Approach
+
+  + Split the data into parts. Training set and validation set.
+  + Fit model using the training set.
+  + Use the Validation set and fitted model to predict observations from validation set.
+  + Calculate validation set error rate.
+  
+## Cross Validation - Validation set Approach
+**Recall**
+
+::::{.columns}
+
+:::{.column}
+```{r}
+#| echo: true
+
+lm(mpg ~ horsepower,
+   data = Auto)|>summary()
+```
+:::
+
+:::{.column}
+```{r}
+#| echo: true
+
+lm(mpg ~ horsepower + poly(horsepower,2),
+   data = Auto)|>summary()
+```
+:::
+
+::::
+
+## Cross Validation - Validation set Approach{.center}
+
+  + What if we keep increasing the power of the polynomial?
+  + Do we get consistent error rates??
+
+## Cross Validation - Validation set Approach{.scrollable}
+
+
+
+:::{.panel-tabset}
+### code
+
+```{r}
+#| echo: true
+
+calc_validation_mse <- function(pow) {
+  Auto_marked <- Auto|>
+  mutate(
+    set_train = sample(c(1,0),392,
+                       replace =T,
+                       prob = c(0.5,0.5))
+    )
+
+Auto_test <- Auto_marked[Auto_marked$set_train == 1,]
+Auto_valid <- Auto_marked[Auto_marked$set_train == 0,]
+
+mod <- lm(mpg ~ poly(horsepower,pow),
+          Auto_test)
+
+tibble(
+  power = pow,
+  validation_mse = mean((Auto_valid$mpg - predict(mod,Auto_valid))^2)
+)
+
+}
+
+
+map_dfr(
+  c(1:10),
+  calc_validation_mse
+)|>
+  ggplot(aes(power,validation_mse))+
+  geom_point(colour="steelblue")+
+  scale_x_continuous(breaks = c(1:10))+
+  geom_line(colour = "red")+
+  theme_bw()+
+  labs(
+    y = "MSE",
+    x = "Degree of polynomial"
+    )-> plot_powers
+
+```
+
+### plot
+
+```{r}
+plot_powers
+```
+
+
+:::
+
+## Cross Validation - Validation set Approach{.scrollable}
+
+```{r}
+
+map_dfr(
+  c(1:10),
+  ~map_dfr(
+    c(1:10),
+    calc_validation_mse
+    )|>
+    mutate(
+      iter = .x
+      )
+  )|>
+  ggplot(aes(power,validation_mse))+
+  geom_point(colour="steelblue",
+             alpha = 0.5)+
+  scale_x_continuous(breaks = c(1:10))+
+  theme_bw()+
+  labs(
+    title = "10 iterations for each power.",
+    y = "MSE",
+    x = "Degree of polynomial"
+    )
+
+
+```
+
+## Cross Validation - Validation set Approach
+
+> Problems with Validation set approach
+
+  + Validation estimate of test error rate is highly variable.
+  + Since number of observations at disposal reduces for training, statistical methods don't perform well. This leads to overestimation of test error rate.  
+  
+## Exercise 
+
+Use the `penguins` data from Palmerpenguins package.
+
+Split data in 50/50 training and validation set.
+
+Use species as response. Train a multinomial logistic regression to predict species.
+
+Write a code that will record the validation error rate. 
+
+Iterate this a 100 time and plot a density chart of the validation error rate.
+
+## leave-one-out Cross Validation
+
+  + Leave out first observation from the data.
+  + Use remaining observations to train a model.
+  + Use the left out observation to calculate validation MSE.
+  + Repeat this process till all observations are exhausted and calculate Average validation MSE.
+
+> Less Bais compared to validation set approach. So, does not overestimate test error rate.
+
+> Since no randomness in training/testing split, very little variablity of test error rate.
