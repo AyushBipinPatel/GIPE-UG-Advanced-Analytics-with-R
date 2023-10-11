@@ -257,3 +257,79 @@ Iterate this a 100 time and plot a density chart of the validation error rate.
 > Less Bais compared to validation set approach. So, does not overestimate test error rate.
 
 > Since no randomness in training/testing split, very little variablity of test error rate.
+
+
+## K-fold Cross Validation
+
+  + Make k parts of the training data with nearly equal observations.
+  + leave out the observations from the first part and train the model using observations from k-1 parts.
+  + measure MSE using the trained model and the left out first part of the data.
+  + Repeat this till all k parts are exhausted.
+  + Calculate average of all k MSEs.
+  
+## Example
+
+>  Mark observations to a part
+
+```{r}
+#| echo: true
+
+Auto_part <- Auto|>
+  mutate(
+    part = sample(c(1:10),
+                  nrow(Auto),
+                  replace = T)
+  )
+
+
+```
+
+## Example - continued
+
+> function to train the model and get mse from validation data
+
+
+```{r}
+#| echo: true
+
+
+train_and_get_metric <- function(leave_out){
+  
+mod <- lm(mpg ~ horsepower + 
+            poly(horsepower,2),
+          data = Auto_part|>
+            filter(part != leave_out))
+
+y_i <- Auto_part|>
+  filter(part == leave_out)|>
+  pull(mpg) 
+
+y_i_hat<- predict(mod, Auto_part|>
+         filter(part == leave_out))
+
+mean((y_i - y_i_hat)^2)
+
+}
+```
+
+## Example - continued
+
+> Run the function k time and get the k MSEs
+
+```{r}
+#| echo: true
+#| warning: false
+
+map_dbl(c(1:10),
+        train_and_get_metric) -> k_MSE
+
+mean(k_MSE)
+
+```
+## The Bootstrap
+
+> Helps "*quantify the uncertainty associated with estimators or statistical learning method*".
+
+Eg:
+  + Estimate standard errors of coeff from a linear model.
+
