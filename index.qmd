@@ -59,6 +59,7 @@ Here are links to lecture slides, this will keep updating. Please visit this pag
   + [Lecture 2: Linear Regression](lecture2.html)
   + [Lecture 3: Classification](lecture3.html)
   + [Lecture 4: Resampling Methods](lecture4.html)
+  + [Lecture 5: Exercises](lecture5.html)
   
 
 ## Announcements

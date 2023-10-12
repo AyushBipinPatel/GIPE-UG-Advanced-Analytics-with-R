@@ -1,0 +1,110 @@
+---
+title: "Resampling Methods"
+subtitle: "Advance Analytics with R (UG 21-24)"
+author: "Ayush Patel"
+format: 
+  revealjs:
+    embed-resources: true
+    slide-number: c/t
+    width: 1400
+    theme: [serif, theme.scss]
+---
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+
+library(tidyverse)
+library(MASS)
+library(ISLR)
+library(ISLR2)
+library(patchwork)
+
+```
+
+
+## Before we start
+
+::: columns
+::: {.column width="70%"}
+
+Please load the following packages
+
+```{r}
+#| eval: false
+#| echo: true
+
+library(tidyverse)
+library(MASS)
+library(ISLR)
+library(ISLR2)
+library(nnet)### get this if you don't
+library(e1071) ## get this if you don't
+library(modeldata)## get this if you don't
+
+```
+
+<br> <br>
+
+Access lecture slide from [bit.ly/aar-ug](http://bit.ly/aar-ug)
+:::
+
+::: {.column width="30%"}
+```{=html}
+<figure>
+<img src="https://images.metmuseum.org/CRDImages/aa/original/DT5334.jpg" alt="Warrior's armor(gusoku)" >
+<figcaption style="font-size:10px;">Source: <a herf = "https://www.metmuseum.org/art/collection/search/24975?searchField=All&amp;sortBy=Relevance&amp;high=on&amp;ao=on&amp;showOnly=openAccess&amp;ft=start&amp;offset=0&amp;rpp=40&amp;pos=7">Armor (Gusoku)</a></figcaption>
+</figure>
+```
+:::
+:::
+
+## Hello
+
+::: columns
+::: {.column width="70%"}
+I am [Ayush]{.fragment fragment-index="1" style="font-size:45px"}.
+
+[I am a researcher working at the intersection of data, law, development and economics.]{.fragment fragment-index="2" style="font-size:25px"}
+
+[I teach Data Science using R at Gokhale Institute of Politics and Economics]{.fragment fragment-index="3" style="font-size:25px"}
+
+[I am a [RStudio (Posit) certified tidyverse Instructor.](https://education.rstudio.com/trainers/people/patel+ayush/)]{.fragment fragment-index="4" style="font-size:25px"}
+
+[I am a Researcher at [Oxford Poverty and Human development Initiative (OPHI)](https://ophi.org.uk/), at the University of Oxford.]{.fragment fragment-index="5" style="font-size:25px"}
+:::
+
+::: {.column width="30%"}
+**Reach me**
+
+{{< fa solid envelope >}} [ayush.ap58\@gmail.com]{style="font-size:25px"}
+
+{{< fa solid envelope >}} [ayush.patel\@gipe.ac.in]{style="font-size:25px"}
+:::
+:::
+
+## Exercise 1
+
+  + See the `Sacremento` data in package modeldata.
+  + Carry out Exploratory analysis to see variables that are associated with price of a house.
+  + Train a model that will predict prices of houses. 
+  + Carry out model diagnostics. Make necessary changes to the model.
+  + Check model performance.
+  
+## Exercise 2
+
+  + See the `attrition` data in modeldata.
+  + Explore relation of variables with attrition.
+  + Create a model that explains attrition in relation with available variables.
+  + How well does the model perform?
+  
+## Exercise 3
+
+  + See the `hpc_data` data in modeldata.
+  + Create a model to predict the `class` variable.
+  + Calculate training and validation error rates.
+  + Check model performance.
+  
+## Exercise 4
+
+>How would you estimate average number of twitter followers of a All twitter using Bsc students at Gokhale Institute of Economics and Politics?
+
+The only condition is that you cannot talk to more than 40 randomly selected twitter using BSc students at Gokhale Institute of Economics and Politics.
+
