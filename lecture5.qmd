@@ -1,5 +1,5 @@
 ---
-title: "Resampling Methods"
+title: "Exercises"
 subtitle: "Advance Analytics with R (UG 21-24)"
 author: "Ayush Patel"
 format: 
