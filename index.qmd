@@ -60,6 +60,7 @@ Here are links to lecture slides, this will keep updating. Please visit this pag
   + [Lecture 3: Classification](lecture3.html)
   + [Lecture 4: Resampling Methods](lecture4.html)
   + [Lecture 5: Exercises](lecture5.html)
+  + [Lecture 6: Linear Model Selection and Regularization](lecture6.html)
   
 
 ## Announcements

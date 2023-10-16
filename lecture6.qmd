@@ -1,0 +1,160 @@
+---
+title: "Linear Model Selection and Regularization"
+subtitle: "Advance Analytics with R (UG 21-24)"
+author: "Ayush Patel"
+format: 
+  revealjs:
+    embed-resources: true
+    slide-number: c/t
+    width: 1400
+    theme: [serif, theme.scss]
+---
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+
+library(tidyverse)
+library(MASS)
+library(ISLR)
+library(ISLR2)
+library(patchwork)
+
+```
+
+
+## Before we start
+
+::: columns
+::: {.column width="70%"}
+
+Please load the following packages
+
+```{r}
+#| eval: false
+#| echo: true
+
+library(tidyverse)
+library(MASS)
+library(ISLR)
+library(ISLR2)
+library(nnet)### get this if you don't
+library(e1071) ## get this if you don't
+library(modeldata)## get this if you don't
+
+```
+
+<br> <br>
+
+Access lecture slide from [bit.ly/aar-ug](http://bit.ly/aar-ug)
+:::
+
+::: {.column width="30%"}
+```{=html}
+<figure>
+<img src="https://images.metmuseum.org/CRDImages/aa/original/DT5334.jpg" alt="Warrior's armor(gusoku)" >
+<figcaption style="font-size:10px;">Source: <a herf = "https://www.metmuseum.org/art/collection/search/24975?searchField=All&amp;sortBy=Relevance&amp;high=on&amp;ao=on&amp;showOnly=openAccess&amp;ft=start&amp;offset=0&amp;rpp=40&amp;pos=7">Armor (Gusoku)</a></figcaption>
+</figure>
+```
+:::
+:::
+
+## Hello
+
+::: columns
+::: {.column width="70%"}
+I am [Ayush]{.fragment fragment-index="1" style="font-size:45px"}.
+
+[I am a researcher working at the intersection of data, law, development and economics.]{.fragment fragment-index="2" style="font-size:25px"}
+
+[I teach Data Science using R at Gokhale Institute of Politics and Economics]{.fragment fragment-index="3" style="font-size:25px"}
+
+[I am a [RStudio (Posit) certified tidyverse Instructor.](https://education.rstudio.com/trainers/people/patel+ayush/)]{.fragment fragment-index="4" style="font-size:25px"}
+
+[I am a Researcher at [Oxford Poverty and Human development Initiative (OPHI)](https://ophi.org.uk/), at the University of Oxford.]{.fragment fragment-index="5" style="font-size:25px"}
+:::
+
+::: {.column width="30%"}
+**Reach me**
+
+{{< fa solid envelope >}} [ayush.ap58\@gmail.com]{style="font-size:25px"}
+
+{{< fa solid envelope >}} [ayush.patel\@gipe.ac.in]{style="font-size:25px"}
+:::
+:::
+
+## Why are we still talkig about linear models?
+
+> When there are many fancy things to try out!!
+
+  + **Inference Advantage**
+  + **Real World Problems Advantage**
+  + **Competitive** compared to non-linear models. 
+  
+> Therefore, we discuss linear models beyond least squares estimate.
+
+## What do we gain?
+
+>**Prediction Accuracy**:
+
+  + If Y and X are approximately linear, least square approach has low bias.
+  + For $n>>p$, least square has low variance as well.
+  + But, if $n>>p$ is not held, least square has high variance and poor prediction ability on future observations.
+  + And if $p>n$, then there are infinitely many solutions to least square method.
+  
+## What do we gain?
+
+> **Model Interpretability**
+
+  + too many predictors make a complex model.
+  + Sometimes, some predictors may not even have a real relation with the response.
+  + We reduce coeffs of Irrelevant variables to 0.
+  + We discuss approaches of feature selection.
+  
+## Subset Selection{.center}
+
+> *"This approach involves identifying a subset of the p predictors that we believe to be related to the response. We then fit a model using least squares on the reduced set of variables."*
+
+  + Best Subset
+  + Stepwise selection
+  
+## Subset Selection - *Best Subset*
+
+A least square model is fit for all possible combinations of p predictors.
+
+So, if there are 3 predictors ($p_1,p_2,p_3$), we fit the following models:
+
+model 1 $y = \beta_a + \beta_1*p_1$ <br>
+model 2 $y = \beta_b + \beta_2*p_2$ <br>
+model 3 $y = \beta_c + \beta_3*p_3$ <br>
+.<br>
+.<br>
+model 7 $y = \beta_0 + \beta_e*p_1 + \beta_f*p_2 + \beta_g*p_3$
+
+> Select the best from these
+
+## Subset Selection - *Best Subset*
+
+  + A null model is defined with no predictors. Name it $M_0$
+  
+  + For each $k$, where $k=1,2,3..p$, select the best model from the all $(_k^p)$ combinations. Use RSS or $R^2$. Call it $M_k$
+  
+  + Select a single best model from $M_0, M_1,.....,M_p$. Use prediction error on a validation set,$C_p$, AIC, BIC, adjusted $R^2$ or use the cross validation method. 
+  
+## Subset Selection - *Best Subset*{.center}
+
+> Issues:
+
+  + Computational limitations.
+  + *" The larger the search space, the higher the chance of finding models that look good on the training data, even though  they might not have any predictive power on future data. "*
+  
+## Subset Selection - * Forward Stepwise Selection*
+
+  + Start with Null model. $M_0$
+  + For all $p-k$ models, choose the best using $R^2$ or RSS.       
+  + Select a single best model from $M_0, M_1,.....,M_p$. Use prediction error on a validation set,$C_p$, AIC, BIC, adjusted $R^2$ or use the cross validation method.
+  
+  
+## Subset Selection - * Forward Stepwise Selection*
+
+> Issues:
+
+  + *"Though forward stepwise tends to do well in practice, it is not guaranteed to find the best possible model out of all 2p models containing subsets of the p predictors."*
+
