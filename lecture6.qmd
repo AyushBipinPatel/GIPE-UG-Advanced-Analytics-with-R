@@ -158,3 +158,11 @@ model 7 $y = \beta_0 + \beta_e*p_1 + \beta_f*p_2 + \beta_g*p_3$
 
   + *"Though forward stepwise tends to do well in practice, it is not guaranteed to find the best possible model out of all 2p models containing subsets of the p predictors."*
 
+## Subset Selection - * Backward Stepwise Selection*
+
+  + Start with full model. $M_p$
+  + Consider all k models that contain all but one of the predictors in $M_k$, for a total of k − 1 predictors. Choose the best among these k models, and call it Mk−1. Here
+best is defined as having smallest RSS or highest $R^2$       
+  + Select a single best model from $M_0, M_1,.....,M_p$. Use prediction error on a validation set,$C_p$, AIC, BIC, adjusted $R^2$ or use the cross validation method.
+  
+  
