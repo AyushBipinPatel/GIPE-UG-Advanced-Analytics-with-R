@@ -145,24 +145,109 @@ model 7 $y = \beta_0 + \beta_e*p_1 + \beta_f*p_2 + \beta_g*p_3$
   + Computational limitations.
   + *" The larger the search space, the higher the chance of finding models that look good on the training data, even though  they might not have any predictive power on future data. "*
   
-## Subset Selection - * Forward Stepwise Selection*
+## Subset Selection - *Forward Stepwise Selection*
 
   + Start with Null model. $M_0$
   + For all $p-k$ models, choose the best using $R^2$ or RSS.       
   + Select a single best model from $M_0, M_1,.....,M_p$. Use prediction error on a validation set,$C_p$, AIC, BIC, adjusted $R^2$ or use the cross validation method.
   
   
-## Subset Selection - * Forward Stepwise Selection*
+## Subset Selection - *Forward Stepwise Selection*
 
 > Issues:
 
   + *"Though forward stepwise tends to do well in practice, it is not guaranteed to find the best possible model out of all 2p models containing subsets of the p predictors."*
 
-## Subset Selection - * Backward Stepwise Selection*
+## Subset Selection - *Backward Stepwise Selection*
 
   + Start with full model. $M_p$
   + Consider all k models that contain all but one of the predictors in $M_k$, for a total of k − 1 predictors. Choose the best among these k models, and call it Mk−1. Here
 best is defined as having smallest RSS or highest $R^2$       
   + Select a single best model from $M_0, M_1,.....,M_p$. Use prediction error on a validation set,$C_p$, AIC, BIC, adjusted $R^2$ or use the cross validation method.
   
+## Choose wisely
+
+We generate several models using best subset selection, forward stepwise and backward stepwise.
+
+> We must choose carefully which models to pick. We ideally want a model that will have the lowest test error rate.
+
+  + Estimate test error rate by adjusting training error rate for bias due to overfitting.
+  + Cross validation.
   
+## The four horsemen
+
+> $C_p$, AIC,BIC, Adjusted $R^2$
+
+Recall that $MSE = RSS/n$. Also, since we use least squares approach to choose coeffs in a manner where training RSS is minimized, we end up getting a training MSE is an underestimate of test MSE.
+
+**That is the reason $R^2$ and training RSS are not suitable for selecting from many models.**
+
+> Therefore we learn about $C_p$, Akaike Information criterion (AIC), Bayesian Information Criterion (BIC) and Adjusted $R^2$
+
+## The four horsemen - $C_p$
+
+Say there is a least square model with $d$ predictors.
+
+The estimate of test error rate is given by:
+
+$$C_p = \frac{1}{n}(RSS + 2d\hat\sigma^2)$$
+
+
+$\hat\sigma^2$ is the estimate of variance of $\epsilon$, estimated using a full model.
+
+## The four horsemen - AIC
+
+AIC is defined for a range of maximum likelihood models. 
+
+
+$$AIC = 2d - 2ln(L)$$
+
+
+$$AIC = \frac{1}{n}(RSS + 2d\hat\sigma^2)$$
+
+## The four horsemen - BIC{.center}
+
+BIC, for a least square model with d predictors:
+
+$$BIC = \frac{1}{n}(RSS + log(n)d\hat\sigma^2   )$$
+
+## The four horsemen - Adjusted $R^2${.center}
+
+$$Adjusted\hspace{1mm} R^2 =   \frac{RSS(n-d-1)}{TSS(n-1)}$$
+
+
+## Cross Validation - an alternative to the horsemen {.center}
+
+  + Instead of *adjusting* we can directly estimate test error rate.
+  + Makes fewer assumptions about underlying model.
+  
+  
+## Exercise - best subset
+
+See 6.5.1 in ISLR 
+
+Apply best subset approach for the Auto data in ISLR2 package.
+
+Use mpg as response.
+
+What is the best model? Feel free to use ggplot for charts and broom to collect stats from model object.
+
+## Exercise  - Validation set
+
+See 6.5.1 in ISLR
+
+Apply validation set approach on Auto data in ISLR2 package.
+
+Use mpg as response.
+
+Which is the best model?
+
+## Shrinkage Methods{.center}
+
+In subsetset selection methods we are working with least squares. 
+
+Alternatively, we try to reduce the coefficients in a full model to zero. This is referred to shrinkage, constraining or regularization. 
+
+This reduces variance of coefficients, leading to a better bit.
+
+> Ridge and Lasso are two techniques that allow us to do this.
