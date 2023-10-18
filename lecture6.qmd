@@ -16,6 +16,7 @@ library(MASS)
 library(ISLR)
 library(ISLR2)
 library(patchwork)
+library(glmnet)
 
 ```
 
@@ -251,3 +252,72 @@ Alternatively, we try to reduce the coefficients in a full model to zero. This i
 This reduces variance of coefficients, leading to a better bit.
 
 > Ridge and Lasso are two techniques that allow us to do this.
+
+## Ridge Regression
+
+In least square method we minimize RSS to estimate coefficients.
+
+In Ridge we minimize:
+
+$$RSS + \lambda \sum_{j=1}^p\beta_j^2$$
+
+$\lambda >= 0$ is the tuning parameter.
+
+> Ridge Regression produces mroe than 1 set of coefficients.
+<br>
+> Ridge Regression is not scale equivariant.
+
+## Ridge Regression{.center}
+
+Since it is not scale equivariant, apply only after standardizing the predictors.
+
+$$\tilde x = \frac{x_{ij}}{\sqrt{\frac{1}{n}\sum_{i=1}^j(x_{ij} - \bar{x_{ij}})^2}}$$
+
+## Apply Ridge{.scrollable}
+
+
+
+```{r}
+#| echo: true
+
+## Remove all NA
+
+Hitters |>
+  na.omit() -> hit_no_miss
+
+## Model Matrix
+
+x <- model.matrix(Salary ~., hit_no_miss)[,-1]
+
+y <- hit_no_miss$Salary
+
+## ridge
+
+10^seq(10, -2, length = 100) -> lambdas
+
+glmnet(x, y, alpha = 0, 
+       lambda = lambdas) -> mod_ridge
+
+## Model Object
+
+mod_ridge|>
+  broom::tidy()|>
+  knitr::kable()%>%
+  kableExtra::kable_styling()%>%
+  kableExtra::scroll_box(width = "100%", height = "400px")
+  
+
+```
+## Exercise Ridge Regression
+
+Use the birthwt data. Your response is variable bwt.
+
+Apply a ridge regression.
+
+Then create training and testing set(split your preference).
+
+Create two charts:
+
+  + Chart1 : X-axis lambda value, Y-axis MSE. Plot train and test MSE for each lambda value.
+  + Chart2: X-axis lambda value, Y-axis standardized coeffs. Plot coeff estimates for all predictors.
+
