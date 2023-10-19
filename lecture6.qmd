@@ -321,3 +321,123 @@ Create two charts:
   + Chart1 : X-axis lambda value, Y-axis MSE. Plot train and test MSE for each lambda value.
   + Chart2: X-axis lambda value, Y-axis standardized coeffs. Plot coeff estimates for all predictors.
 
+## Ridge Issue{.scrollable}
+
+
+> We have to deal with a full model. Interpretability becomes difficult, though not an isuue with prediction accuracy.
+
+:::{.panel-tabset}
+
+#### Code
+
+```{r}
+#| echo: true
+#| fig-width: 12
+#| fig-height: 8
+
+mod_ridge|>
+  broom::tidy()|>
+  filter(term != "(Intercept)")|>
+  ggplot(aes(lambda,estimate,
+             colour = term))+
+  geom_line()+
+  guides(colour = guide_legend(nrow = 2))+
+  scale_x_log10(
+    breaks = scales::log_breaks(n = 10)
+    )+
+  labs(
+    x = "log10 lambda"
+  )+
+  theme_minimal()+
+  theme(
+    legend.position = "top",
+    legend.direction = "horizontal"
+  ) -> p_coeff_lambda
+
+```
+
+#### Plot
+
+```{r}
+p_coeff_lambda
+```
+
+
+
+
+:::
+
+## The Lasso
+
+An alternative to ridge that overcomes the full model advantage.
+
+$$RSS + \lambda \sum_{j=1}^p|\beta_j|$$
+
+Notice the difference in Lasso and Ridge?
+
+Lasso uses $\ell_2$ and Ridge uses $\ell_2$.
+
+The $\ell_1$  norm of coeff vector is $||\beta||_1 = \sum_{j=1}^p|\beta_j|$
+
+The $\ell_1$  norm of coeff vector is $||\beta||_2 = \sum_{j=1}^p(\beta_j)^2$
+
+## Applying Lasso{.scrollable}
+
+
+:::{.panel-tabset}
+
+#### Code
+
+```{r}
+#| echo: true
+
+glmnet(x, y, alpha = 1, 
+       lambda = lambdas) -> mod_lasso
+
+```
+
+#### comparison
+
+::::{.columns}
+
+:::{.column}
+
+### Ridge
+
+```{r}
+p_coeff_lambda+
+  labs(title = "Ridge")
+```
+
+:::
+
+:::{.column}
+
+### Lasso
+
+```{r}
+mod_lasso|>
+  broom::tidy()|>
+  filter(term != "(Intercept)")|>
+  ggplot(aes(lambda,estimate,
+             colour = term))+
+  geom_line()+
+  guides(colour = guide_legend(nrow = 2))+
+  scale_x_log10(
+    breaks = scales::log_breaks(n = 10)
+    )+
+  labs(
+    x = "log10 lambda",
+    title = "Lasso"
+  )+
+  theme_minimal()+
+  theme(
+    legend.position = "top",
+    legend.direction = "horizontal"
+  )
+```
+:::
+
+::::
+
+:::
