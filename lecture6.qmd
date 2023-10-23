@@ -441,3 +441,10 @@ mod_lasso|>
 ::::
 
 :::
+
+## How to choose $\lambda$?
+
+  + Create a grid of $\lambda_1,....,\lambda_n$
+  + For each lambda, perform cross validation.
+  + Pick the $\lambda_i$ with the least Cross Validation MSE.
+  + Fit the model with entire data set with the chosen $\lambda_i$
