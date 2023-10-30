@@ -61,6 +61,7 @@ Here are links to lecture slides, this will keep updating. Please visit this pag
   + [Lecture 4: Resampling Methods](lecture4.html)
   + [Lecture 5: Exercises](lecture5.html)
   + [Lecture 6: Linear Model Selection and Regularization](lecture6.html)
+  + [Lecture 7: Multiple Testing](lecture7.html)
   
 
 ## Announcements
