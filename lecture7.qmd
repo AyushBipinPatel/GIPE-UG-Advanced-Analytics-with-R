@@ -1,0 +1,256 @@
+---
+title: "Multiple Testing"
+subtitle: "Advance Analytics with R (UG 21-24)"
+author: "Ayush Patel"
+format: 
+  revealjs:
+    embed-resources: true
+    slide-number: c/t
+    width: 1400
+    theme: [serif, theme.scss]
+---
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+
+library(tidyverse)
+library(MASS)
+library(ISLR)
+library(ISLR2)
+library(patchwork)
+library(glmnet)
+
+```
+
+
+## Before we start
+
+::: columns
+::: {.column width="70%"}
+
+Please load the following packages
+
+```{r}
+#| eval: false
+#| echo: true
+
+library(tidyverse)
+library(MASS)
+library(ISLR)
+library(ISLR2)
+library(infer)### get this if you don't
+
+```
+
+<br> <br>
+
+Access lecture slide from [bit.ly/aar-ug](http://bit.ly/aar-ug)
+:::
+
+::: {.column width="30%"}
+```{=html}
+<figure>
+<img src="https://images.metmuseum.org/CRDImages/aa/original/DT5334.jpg" alt="Warrior's armor(gusoku)" >
+<figcaption style="font-size:10px;">Source: <a herf = "https://www.metmuseum.org/art/collection/search/24975?searchField=All&amp;sortBy=Relevance&amp;high=on&amp;ao=on&amp;showOnly=openAccess&amp;ft=start&amp;offset=0&amp;rpp=40&amp;pos=7">Armor (Gusoku)</a></figcaption>
+</figure>
+```
+:::
+:::
+
+## Hello
+
+::: columns
+::: {.column width="70%"}
+I am [Ayush]{.fragment fragment-index="1" style="font-size:45px"}.
+
+[I am a researcher working at the intersection of data, law, development and economics.]{.fragment fragment-index="2" style="font-size:25px"}
+
+[I teach Data Science using R at Gokhale Institute of Politics and Economics]{.fragment fragment-index="3" style="font-size:25px"}
+
+[I am a [RStudio (Posit) certified tidyverse Instructor.](https://education.rstudio.com/trainers/people/patel+ayush/)]{.fragment fragment-index="4" style="font-size:25px"}
+
+[I am a Researcher at [Oxford Poverty and Human development Initiative (OPHI)](https://ophi.org.uk/), at the University of Oxford.]{.fragment fragment-index="5" style="font-size:25px"}
+:::
+
+::: {.column width="30%"}
+**Reach me**
+
+{{< fa solid envelope >}} [ayush.ap58\@gmail.com]{style="font-size:25px"}
+
+{{< fa solid envelope >}} [ayush.patel\@gipe.ac.in]{style="font-size:25px"}
+:::
+:::
+
+## Motivation for Tests for Significance
+
+  + Helps us answer - *Is it just chance?*
+  + Understand and quantify uncertainty and variability.
+  
+> Helps us make and verify claims about a population using sample estimates.
+
+> Helps us make and verify causal claims.
+
+## The numbered tickets example{.center}
+
+refer: Statistics by David Freedman
+
+## Example{.center}
+
+> Write a simulation that will implement the previous example.
+
+## The sex discrimination case study{.center}
+
+refer: Intro to Modern Statics 
+
+## A little about simulation and {infer} {.scrollable}
+
+::::{.columns}
+
+:::{.column}
+
+### Base
+
+```{r}
+#| echo: true
+
+get_diffs <- function(...){
+  
+  decisions <- ifelse(
+  openintro::sex_discrimination$decision == "promoted",
+  1,0
+)
+
+sample(decisions,
+       size = 48,
+       replace = F) -> shuffled_decision
+
+mean(shuffled_decision[1:24]) - mean(shuffled_decision[24:48])
+  
+}
+
+map_dbl(c(1:100), 
+        get_diffs)
+
+```
+
+
+:::
+
+
+:::{.column}
+
+### infer
+
+```{r}
+#| echo: true
+
+openintro::sex_discrimination|>
+  infer::specify(decision ~ sex,
+                 success = "promoted")|>
+  infer::hypothesise(null = "independence")|>
+  infer::generate(reps = 100,
+                  type = "permute")|>
+  infer::calculate(stat = "diff in props",
+                   order = c("male","female"))
+```
+
+:::
+
+
+::::
+
+## Both work fine{.scrollable}
+ *but what is convenient*
+ 
+```{r}
+#| echo: true
+
+tibble(
+  base_diffs = map_dbl(c(1:1000), 
+        get_diffs),
+  infer_diffs = openintro::sex_discrimination|>
+  infer::specify(decision ~ sex,
+                 success = "promoted")|>
+  infer::hypothesise(null = "independence")|>
+  infer::generate(reps = 1000,
+                  type = "permute")|>
+  infer::calculate(stat = "diff in props",
+                   order = c("male","female"))|>
+    pull(stat)
+) -> differences_in_props
+
+differences_in_props
+
+```
+
+## Both work fine{.scrollable}
+
+```{r}
+differences_in_props|>
+  ggplot()+
+  geom_density(aes(base_diffs),
+               colour = "steelblue")+
+  geom_density(aes(infer_diffs),
+               colour = "hotpink")+
+  theme_minimal()+
+  labs(
+    title = "Both ways generate similar results",
+    x = "Differences in proportoions"
+  ) -> plt
+
+plt
+```
+
+## Get p-values
+
+::::{.columns}
+
+:::{.column}
+
+### Base
+
+```{r}
+#| echo: true
+
+map_dbl(
+  c(1:1000),
+  get_diffs
+) >= 0.292 -> greater_equal_obs_stat
+
+greater_equal_obs_stat/1000
+
+```
+
+
+:::
+
+
+:::{.column}
+
+### infer
+
+```{r}
+#| echo: true
+
+
+  infer_diffs = openintro::sex_discrimination|>
+  infer::specify(decision ~ sex,
+                 success = "promoted")|>
+  infer::hypothesise(null = "independence")|>
+  infer::generate(reps = 1000,
+                  type = "permute")|>
+  infer::calculate(stat = "diff in props",
+                   order = c("male","female"))|>
+  infer::get_p_value(obs_stat = 0.292,
+                     direction = "right")
+    
+
+```
+
+
+:::
+
+
+::::
+
+## Exercise
+
+Use both methods for the sex discrimination study, iterate several times. Show that both methods generate similar p-values.
