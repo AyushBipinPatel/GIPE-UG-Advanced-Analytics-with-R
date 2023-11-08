@@ -215,7 +215,7 @@ map_dbl(
   get_diffs
 ) >= 0.292 -> greater_equal_obs_stat
 
-greater_equal_obs_stat/1000
+sum(greater_equal_obs_stat)/1000
 
 ```
 
@@ -231,7 +231,7 @@ greater_equal_obs_stat/1000
 #| echo: true
 
 
-  infer_diffs = openintro::sex_discrimination|>
+  openintro::sex_discrimination|>
   infer::specify(decision ~ sex,
                  success = "promoted")|>
   infer::hypothesise(null = "independence")|>
@@ -254,3 +254,102 @@ greater_equal_obs_stat/1000
 ## Exercise
 
 Use both methods for the sex discrimination study, iterate several times. Show that both methods generate similar p-values.
+
+## Testing Framework{.center}
+
+  + Define Null and Alternative Hypothesis
+  + Construct Test Statistic
+  + Compute p-value
+  + Decide to reject the Null or fail to reject
+  
+## Type I and Type II Errors{.center}
+
+   + Type 1 Error: $H_0$ is actually true but we erroneously reject it.
+   + Type 2 Error: $H_0$ is actually not true and we fail to reject it.
+   + Power of Hypothesis test: probability of not making Type 2 error when $H_a$ actually holds.
+   
+## The Multiple Testing problem{.center}
+
+> Discuss the coin flip example from ISLR
+
+:::{.callout-note}
+
+If we test hundreds of Null Hypothesis, and reject all with p-value 0.01, *How many type 1 errors should be expected.* 
+
+:::
+
+
+## The Family-Wise Error Rate
+
+> The probablity of making at least one Type I error when testing m hypothesis.
+
+Decision            | $H_o$ is True | $H_o$ is False | Total
+--------------------|---------------|----------------|-------
+Reject $H_o$        |       V       |        S       |  R  
+Do Not Reject $H_o$ |       U       |        W       |  m - R
+Total               |      $m_o$    |        m-$m_o$ |  m
+
+
+$FWER = Pr(V>=1)$
+
+## The Family-Wise Error Rate
+
+$$FWER(\alpha) = 1 - Pr(V = 0)$$
+
+$$FWER(\alpha) =  1 - \prod_{j=1}^m (1-\alpha) = 1 - (1-\alpha)^m$$
+
+## The Family-Wise Error Rate
+
+```{r}
+#| echo: false
+#| fig-width: 9
+
+
+tibble::tibble(
+  num_h = c(1:500),
+  a_001 = 1 - (1-0.001)^num_h,
+  a_01 = 1 - (1-0.01)^num_h,
+  a_05 = 1 - (1-0.05)^num_h
+)|>
+  ggplot()+
+  geom_line(aes(num_h, a_05),
+            colour = "#253485")+
+  geom_line(aes(num_h, a_01),
+            colour = "#299827")+
+  geom_line(aes(num_h, a_001),
+            colour = "#288885")+
+  geom_hline(aes(yintercept = 0.05),
+             linetype = 2)+
+  scale_x_log10(breaks = c(1,2,5,10,20,50,100,200,500))+
+  labs(
+    y = "FWER at a given alpha",
+    x = "Number of Hypothesis"
+  )+
+  theme_minimal()
+
+```
+## The Fund data{.scrollable}
+
+```{r}
+#| echo: false
+
+Fund|>
+  str()
+
+```
+
+## Bonferroni Correction
+
+$$ FWER =  Pr(making at least 1 type 1 error)$$
+
+Assume that $A_j$ is an event where we make a type1 error.
+
+$FWER = Pr(\bigcup_{j=1}^m A_j)$
+
+$FWER <= \sum_{j=1}^m Pr(A_j)$
+
+$FWER(\alpha/m) <= m * \frac{\alpha}{m}$
+
+## Exercise
+
+On the Fund data run independent t test ($\alpha = 0.05$)for each fund manager to see if average excess returns are nonzero. Then run again with Bonferroni correction and see how many are still non-zero.
