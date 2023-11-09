@@ -353,3 +353,156 @@ $FWER(\alpha/m) <= m * \frac{\alpha}{m}$
 ## Exercise
 
 On the Fund data run independent t test ($\alpha = 0.05$)for each fund manager to see if average excess returns are nonzero. Then run again with Bonferroni correction and see how many are still non-zero.
+
+## Bonferroni - to remember
+
+  + Commonly used
+  + Save us from rejecting too many null hypothesis
+  + The cost: We end up making a few Type II errors
+  + Easy to understand
+  + Works regardless whether m hypothesis are independent
+  + True FWER is usually lowers that the Bonferroni or target FWER
+  
+## Holm's Step-Down Prodecure
+
+Procedure:
+
+  + Choose $\alpha$, at which to control FWER
+  + Compute p-values, $p_1,p_2,p_3,...,p_m$
+  + Sort all p-values, $p_{(1)} \le p_{(2)} \le p_{(3)} \le...\le p_{(m)}$
+  + Define $$L = min{j : p_{(j)} > \frac{\alpha}{m+1-j}}$$
+  + Reject all $H_0$ where $p_j<p_{(L)}$
+  
+## Funds data testing{.scrollable}
+
+```{r}
+#| echo: true
+
+## run t-test for all fund managers at 0.05
+
+Fund|>
+  summarise(
+    across(
+      everything(),
+      .fns = ~ t.test(.x, mu = 0)$p.value
+    )
+  )|>
+  pivot_longer(
+    everything(),
+    names_to = "Manager",
+    values_to = "Independent_t.test_pval"
+  ) -> all_test_pvalues
+
+head(all_test_pvalues)
+
+```
+
+```{r}
+#| echo: true
+
+# mark where null is rejected using bonferroni 
+
+all_test_pvalues|>
+  mutate(
+    reject_null_for_bonferroni = Independent_t.test_pval <= (0.05/2000)
+  ) -> all_test_pvalues
+
+head(all_test_pvalues)
+
+```
+
+```{r}
+#| echo: true
+
+## Execute the Holm's Step-Down procedure
+
+all_test_pvalues |>
+  arrange(Independent_t.test_pval) |> # step 2 ascending
+  mutate(
+    index = c(1:2000),
+    is_L_val = (0.05/(2000+1-index)),
+    is_L = Independent_t.test_pval > is_L_val
+  )|> 
+  filter(is_L == T & is_L_val == min(is_L_val))|>
+  pull(Independent_t.test_pval) -> holms_L
+
+
+## reject null hypothesis where pvalues are less than L
+
+all_test_pvalues|>
+  mutate(
+    reject_null_for_holms = Independent_t.test_pval < holms_L
+  )|>
+  
+  ### compare results
+  
+  summarise(
+    rejected_nulls_vanilla = sum(Independent_t.test_pval<=0.05),
+    rejected_nulls_bonferroni = sum(reject_null_for_bonferroni),
+    rejected_nulls_holms = sum(reject_null_for_holms)
+  )|>
+  gt::gt()
+
+
+
+```
+
+
+## False Discovery Rate
+
+**Preventing all false positives can cost of power of the test.**
+
+So, we try and ensure that $\frac{V}{R}, R = V + S (sum\hspace{1mm}of\hspace{1mm}all\hspace{1mm}positives),$ is minimum. This ratio is the False Discovery Proportion.
+
+False Discovery Rate is the expectation of FDP. We try and control this.
+
+## Benjamini-Hochberg Procedure
+
+  + Choose $q$, at which to control FDR
+  + Compute p-values, $p_1,p_2,p_3,...,p_m$
+  + Sort all p-values, $p_{(1)} \le p_{(2)} \le p_{(3)} \le...\le p_{(m)}$
+  + Define $$L = max{j : p_{(j)} < \frac{qj}{m}}$$
+  + Reject all $H_0$ where $p_j \le p_{(L)}$
+  
+
+## Execute the Benjamini-Hochberg Procedure
+
+$q = 0.05$
+
+```{r}
+#| echo: true
+
+all_test_pvalues|>
+  arrange(Independent_t.test_pval)|>
+  mutate(
+    index = c(1:2000),
+    L_val_bh = (0.05*index)/2000,
+    is_L_bh = Independent_t.test_pval < L_val_bh
+  )|>
+  filter(is_L_bh == T & 
+           L_val_bh == max(L_val_bh))|>
+  pull(Independent_t.test_pval) -> bh_L
+
+## reject null hypothesis where pvalues are less than or equal to L
+
+all_test_pvalues|>
+  mutate(
+    reject_null_for_holms = Independent_t.test_pval < holms_L,
+    reject_null_for_bh = Independent_t.test_pval <= bh_L
+    
+  )|>
+  
+  ### compare results
+  
+  summarise(
+    rejected_nulls_vanilla = sum(Independent_t.test_pval<=0.05),
+    rejected_nulls_bonferroni = sum(reject_null_for_bonferroni),
+    rejected_nulls_holms = sum(reject_null_for_holms),
+    rejected_nulls_bh = sum(reject_null_for_bh)
+  )|>
+  gt::gt()
+
+
+
+```
+
