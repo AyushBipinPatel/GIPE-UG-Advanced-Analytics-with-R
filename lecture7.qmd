@@ -464,45 +464,4 @@ False Discovery Rate is the expectation of FDP. We try and control this.
   + Define $$L = max{j : p_{(j)} < \frac{qj}{m}}$$
   + Reject all $H_0$ where $p_j \le p_{(L)}$
   
-
-## Execute the Benjamini-Hochberg Procedure
-
-$q = 0.05$
-
-```{r}
-#| echo: true
-
-all_test_pvalues|>
-  arrange(Independent_t.test_pval)|>
-  mutate(
-    index = c(1:2000),
-    L_val_bh = (0.05*index)/2000,
-    is_L_bh = Independent_t.test_pval < L_val_bh
-  )|>
-  filter(is_L_bh == T & 
-           L_val_bh == max(L_val_bh))|>
-  pull(Independent_t.test_pval) -> bh_L
-
-## reject null hypothesis where pvalues are less than or equal to L
-
-all_test_pvalues|>
-  mutate(
-    reject_null_for_holms = Independent_t.test_pval < holms_L,
-    reject_null_for_bh = Independent_t.test_pval <= bh_L
-    
-  )|>
-  
-  ### compare results
-  
-  summarise(
-    rejected_nulls_vanilla = sum(Independent_t.test_pval<=0.05),
-    rejected_nulls_bonferroni = sum(reject_null_for_bonferroni),
-    rejected_nulls_holms = sum(reject_null_for_holms),
-    rejected_nulls_bh = sum(reject_null_for_bh)
-  )|>
-  gt::gt()
-
-
-
-```
-
+## What if the theoretical Null distribution is not known?{.center}
